@@ -1,4 +1,6 @@
 require 'faraday'
+require 'faraday_middleware' # use autoload, we only need EncodeJson
+require 'faraday-http-cache-ignoring-private'
 
 module DSL
   module ActiveResource
@@ -6,15 +8,22 @@ module DSL
       extend ActiveSupport::Concern
 
       def send_request(verb, route, body)
+        logger = Logger.new 'log/faraday.log'
+
         conn = Faraday.new 'https://api.github.com/' do |c|
-          c.use Faraday::Response::Logger, Logger.new('log/faraday.log')
+          # NOTE: The order is **important**! Leave HttpCache first
+          c.use Faraday::HttpCache, store: :file_store, store_options: ['/tmp/faraday'], logger: logger
+          c.use FaradayMiddleware::EncodeJson # query params are not JSON(body) but data are
+          c.use Faraday::Response::Logger, logger
           c.use Faraday::Adapter::NetHttp
         end
 
         conn.headers[:user_agent] = 'RSpec API for Github'
         conn.authorization *authorization.flatten
 
-        @last_response = conn.send verb, route, (body.to_json if body.present?)
+        @last_response = conn.send verb, route, body do |request|
+          @last_request = request
+        end
       end
 
       def authorization
@@ -32,7 +41,11 @@ module DSL
           case field
           when :user then 'claudiob'
           when :gist_id then '0d7b597d822102148810'
+          when :starred_gist_id then '1e31c19a5fb3c5330193'
+          when :unstarred_gist_id then '5cf0b36e301262a09b30'
+          when :someone_elses_gist_id then 'ca832349ffb06c19d424'
           when :id then '921225'
+          when :updated_at then '2013-10-07T10:10:10Z' # TODO use helpers
           end
         end
 
@@ -74,7 +87,7 @@ module DSL
       end
 
       def request_params
-        # TO DO
+        @last_request.params
       end
     end
   end

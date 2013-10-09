@@ -40,8 +40,8 @@ module DSL
 
       def should_be_filtered_by(filter_options)
         it {
-          if json_value = request_params[filter_options[:parameter].to_s]
-            expect(response_body).to be_filtered_by(filter_options[:attribute], json_value)
+          if json_value = request_params[filter_options[:name].to_s]
+            expect(response_body).to be_filtered_by(json_value, filter_options)
           else
             expect(response_body).to be_filtered_by(nil)
           end

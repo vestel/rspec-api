@@ -32,7 +32,7 @@ module DSL
 
       # TODO: the second 'accepts_filter' should not override the first, but add
       def accepts_filter(filter_parameter, options={})
-        rspec_api[:filter] = {parameter: filter_parameter, attribute: options[:on]}
+        rspec_api[:filter] = options.merge(name: filter_parameter)
       end
 
     private
