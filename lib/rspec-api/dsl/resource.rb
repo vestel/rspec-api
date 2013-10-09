@@ -13,6 +13,7 @@ module DSL
 
       define_action :get
       define_action :put
+      define_action :patch
       define_action :post
       define_action :delete
 
