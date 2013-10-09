@@ -1,5 +1,5 @@
 require 'rspec-api/dsl/resource'
-require 'rspec-api/dsl/get'
+require 'rspec-api/dsl/route'
 require 'rspec-api/dsl/request'
 
 module DSL
