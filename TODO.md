@@ -5,6 +5,7 @@
 * Allow regex in `has_attributes /something/` to test gists file names
 * use ActiveSupport::Autoload
 * nest "should include the field" if the attribute is nested
+* Don't say 'Ok' if sub-conditions are not run, like page with no page (nil?)
 * should `success?` be (200..299).include?(status) ?
 * Instead of
 

@@ -19,10 +19,10 @@ module DSL
 
     private
 
-      def should_return_a_jsonp(callback)
+      def should_return_a_jsonp(callback_options)
         it {
-          if callback == request_params['callback']
-            expect(response_body).to be_a_jsonp(callback)
+          if callback_options[:value] == request_params[callback_options[:name].to_s]
+            expect(response_body).to be_a_jsonp(callback_options[:value])
           else
             expect(response_body).to be_a_jsonp(nil)
           end

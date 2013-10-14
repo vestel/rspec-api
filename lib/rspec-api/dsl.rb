@@ -10,10 +10,6 @@ def resource(name, args = {}, &block)
   describe name, args, &block
 end
 
-def rspec_api
-  metadata[:rspec_api]
-end
-
 RSpec.configuration.include DSL::Resource, rspec_api_dsl: :resource
 RSpec.configuration.include DSL::Route, rspec_api_dsl: :route
 RSpec.configuration.include DSL::Request, rspec_api_dsl: :request

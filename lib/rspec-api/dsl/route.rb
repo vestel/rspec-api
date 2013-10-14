@@ -9,8 +9,8 @@ module DSL
     module ClassMethods
       def request(*args, &block)
         text, values = parse_request_arguments args
-        extra_parameters.each do |params|
-          request_with_extra_params text, values.merge(params), &block
+        sets_of_parameters.each do |params|
+          request_with_params text, values.merge(params), &block
         end
       end
 
@@ -24,7 +24,7 @@ module DSL
 
     private
 
-      def request_with_extra_params(text, values = {}, &block)
+      def request_with_params(text, values = {}, &block)
         context request_description(text, values), rspec_api_dsl: :request do
           # NOTE: Having setup_fixtures inside the context sets up different
           # fixtures for each `request` inside the same `get`. This might be
@@ -38,24 +38,44 @@ module DSL
         end
       end
 
-      def extra_parameters
-        [].tap do |optional_params|
-          optional_params << {} # default: no extra params
+      def sets_of_parameters
+        [].tap do |sets_of_params|
+          sets_of_params.push no_params
+          sets_of_params.push callback_params if rspec_api[:callback]
           if rspec_api[:array]
-            if sort = rspec_api[:sort]
-              optional_params << {sort: sort[:parameter]}
-              optional_params << {sort: "-#{sort[:parameter]}"}
-            end
-            if rspec_api[:page]
-              optional_params << {page: 2} # TODO: use page_parameter!
-            end
-            if rspec_api[:callback]
-              optional_params << {callback: 'callback'} # TODO: use callback_parameter!
-            end
-            if filter = rspec_api[:filter]
-              optional_params << {filter[:name] => existing(filter[:on])}
-            end
+            sets_of_params.push sort_params(verse: :asc) if rspec_api[:sort]
+            sets_of_params.push sort_params(verse: :desc) if rspec_api[:sort]
+            sets_of_params.push page_params if rspec_api[:page]
+            sets_of_params.push filter_params if rspec_api[:filter]
           end
+        end
+      end
+
+      def no_params
+        {} # always send the original request without extra parameters
+      end
+
+      def sort_params(options = {})
+        ascending = options[:verse] == :asc
+        sort = rspec_api[:sort][:name]
+        {sort: ascending ? "#{sort}" : "-#{sort}"}
+      end
+
+      def page_params
+        {}.tap do |params|
+          params[rspec_api[:page][:name]] = rspec_api[:page][:value]
+        end
+      end
+
+      def filter_params
+        {}.tap do |params|
+          params[rspec_api[:filter][:name]] = existing rspec_api[:filter][:on]
+        end
+      end
+
+      def callback_params
+        {}.tap do |params|
+          params[rspec_api[:callback][:name]] = rspec_api[:callback][:value]
         end
       end
 

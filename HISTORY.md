@@ -1,3 +1,5 @@
+v0.1.2  - 2013/10/14 Support JSONP callbacks
+
 v0.1.1  - 2013/10/10 Add PATCH, HTTP Caching, :comparing_with for filters
 
 v0.1.0  - 2013/10/04 Removed dependency from rspec-api-documentation

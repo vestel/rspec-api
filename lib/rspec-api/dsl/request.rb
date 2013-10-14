@@ -12,11 +12,7 @@ module DSL
     end
 
     def response_body
-      if request_params['callback']
-        JSON response.body.match(%r[callback\((.*?)\)])[1]
-      else
-        JSON response.body
-      end
+      JSON response_body_without_callbacks
     rescue JSON::ParserError, JSON::GeneratorError
       nil
     end
@@ -61,6 +57,15 @@ module DSL
       def success?(status_code)
         has_entity_body?(status_code) && status_code < 400
       end
+    end
+
+  private
+
+    def response_body_without_callbacks
+      body = response.body
+      # TODO: extract the 'a_callback' constant
+      callback_pattern = %r[a_callback\((.*?)\)]
+      body =~ callback_pattern ? body.match(callback_pattern)[1] : body
     end
   end
 end

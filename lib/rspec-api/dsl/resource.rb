@@ -3,6 +3,10 @@ module DSL
     extend ActiveSupport::Concern
 
     module ClassMethods
+      def rspec_api
+        metadata[:rspec_api]
+      end
+
       def self.define_action(verb)
         define_method verb do |route, args = {}, &block|
           rspec_api.merge! array: args.delete(:array), verb: verb, route: route
@@ -24,11 +28,11 @@ module DSL
       end
 
       def accepts_page(page_parameter)
-        rspec_api[:page] = page_parameter
+        rspec_api[:page] = {name: page_parameter, value: 2}
       end
 
       def accepts_sort(sort_parameter, options={})
-        rspec_api[:sort] = {parameter: sort_parameter, attribute: options[:on]}
+        rspec_api[:sort] = {name: sort_parameter, attribute: options[:on]}
       end
 
       # TODO: the second 'accepts_filter' should not override the first, but add
@@ -37,7 +41,7 @@ module DSL
       end
 
       def accepts_callback(callback_parameter)
-        rspec_api[:callback] = callback_parameter
+        rspec_api[:callback] = {name: callback_parameter, value: 'a_callback'}
       end
 
     private
