@@ -47,7 +47,10 @@ module DSL
               optional_params << {sort: "-#{sort[:parameter]}"}
             end
             if rspec_api[:page]
-              optional_params << {page: 2}
+              optional_params << {page: 2} # TODO: use page_parameter!
+            end
+            if rspec_api[:callback]
+              optional_params << {callback: 'callback'} # TODO: use callback_parameter!
             end
             if filter = rspec_api[:filter]
               optional_params << {filter[:name] => existing(filter[:on])}

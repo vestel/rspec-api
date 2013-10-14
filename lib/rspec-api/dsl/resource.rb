@@ -36,6 +36,10 @@ module DSL
         rspec_api[:filter] = options.merge(name: filter_parameter)
       end
 
+      def accepts_callback(callback_parameter)
+        rspec_api[:callback] = callback_parameter
+      end
+
     private
 
       def nested_attribute(name)

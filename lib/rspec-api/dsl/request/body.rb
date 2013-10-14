@@ -6,6 +6,7 @@ module DSL
 
     module ClassMethods
       def should_match_body_expectations(status_code, &block)
+        should_return_a_jsonp rspec_api[:callback] if rspec_api[:callback]
         should_return_a_json rspec_api[:array] if success? status_code
         should_include_attributes rspec_api.fetch(:attributes, {}) if success? status_code
         if rspec_api[:array]
@@ -17,6 +18,16 @@ module DSL
       end
 
     private
+
+      def should_return_a_jsonp(callback)
+        it {
+          if callback == request_params['callback']
+            expect(response_body).to be_a_jsonp(callback)
+          else
+            expect(response_body).to be_a_jsonp(nil)
+          end
+        }
+      end
 
       def should_return_a_json(is_array)
         it { expect(response_body).to be_a_json(is_array ? Array : Hash) }

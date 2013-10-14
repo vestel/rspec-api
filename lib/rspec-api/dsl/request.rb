@@ -12,7 +12,11 @@ module DSL
     end
 
     def response_body
-      JSON response.body
+      if request_params['callback']
+        JSON response.body.match(%r[callback\((.*?)\)])[1]
+      else
+        JSON response.body
+      end
     rescue JSON::ParserError, JSON::GeneratorError
       nil
     end

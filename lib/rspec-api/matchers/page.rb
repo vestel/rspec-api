@@ -3,7 +3,7 @@ RSpec::Matchers.define :have_pagination_links do |page|
     if page.nil?
       true
     else
-      links = response_headers['Link'] || '' # https://github.com/lostisland/faraday/pull/306
+      links = response_headers['Link'] || '' # see http://git.io/CUz3-Q
       rels = links.split(',').map{|link| link[/<.+?>; rel="(.*)"$/, 1]}
       rels.sort == ['first', 'prev']
     end
@@ -17,4 +17,3 @@ RSpec::Matchers.define :have_pagination_links do |page|
     %Q(should #{description}, but are #{response_headers})
   end
 end
-
