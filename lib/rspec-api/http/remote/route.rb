@@ -8,7 +8,7 @@ module Http
 
         conn = Faraday.new 'https://api.github.com/' do |c| # TODO: Pass host as a parameter
           # NOTE: The order is **important**! Leave HttpCache first
-          c.use Faraday::HttpCache, store: :file_store, store_options: ['/tmp/faraday'], logger: logger
+          c.use Faraday::HttpCache, serializer: Marshal, store: :file_store, store_options: ['/tmp/faraday'], logger: logger
           c.use FaradayMiddleware::EncodeJson # query params are not JSON(body) but data are
           c.use Faraday::Response::Logger, logger
           c.use Faraday::Adapter::NetHttp
