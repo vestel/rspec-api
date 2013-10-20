@@ -40,4 +40,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faraday'
   spec.add_dependency 'faraday_middleware'
   spec.add_dependency 'faraday-http-cache', '>= 0.3.0'
+
+  # For code coverage / CI
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'coveralls'
 end

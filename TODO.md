@@ -33,5 +33,4 @@ level higher, implicitly inserting a `request do` for a short syntax, e.g.:
 Spec
 ----
 
-* Explain .github
 * Test that send_request caches even when the body has Unicode (that's why we use Marshal serializer)
