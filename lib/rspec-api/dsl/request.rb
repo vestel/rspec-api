@@ -1,3 +1,4 @@
+require 'rack/utils'
 require 'rspec-api/dsl/request/status'
 require 'rspec-api/dsl/request/headers'
 require 'rspec-api/dsl/request/body'
@@ -51,7 +52,7 @@ module DSL
       end
 
       def has_entity_body?(status_code)
-        Rack::Utils::STATUS_WITH_NO_ENTITY_BODY.exclude? status_code
+        !Rack::Utils::STATUS_WITH_NO_ENTITY_BODY.include? status_code
       end
 
       def success?(status_code)

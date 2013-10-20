@@ -1,3 +1,6 @@
+require 'active_support/core_ext/object' # present?
+
+
 module DSL
   module Route
     extend ActiveSupport::Concern
@@ -107,8 +110,8 @@ module DSL
       end
 
       def parse_request_arguments(args)
-        text = args.first.is_a?(String) ? args.first : ''
-        values = args.first.is_a?(String) ? args.second : args.first
+        text = args.first.is_a?(String) ? args[0] : ''
+        values = args.first.is_a?(String) ? args[1] : args[0]
         [text, values || {}] # NOTE: In Ruby 2.0 we could write values.to_h
       end
     end

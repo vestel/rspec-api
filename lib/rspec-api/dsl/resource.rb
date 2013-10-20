@@ -1,6 +1,7 @@
+require 'active_support'
 module DSL
   module Resource
-    extend ActiveSupport::Concern
+    extend ::ActiveSupport::Concern
 
     module ClassMethods
       def rspec_api
