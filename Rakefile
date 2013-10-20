@@ -1,4 +1,9 @@
-require "rspec/core/rake_task"
-RSpec::Core::RakeTask.new(:spec)
+# Add rake build/install/release
+Bundler::GemHelper.install_tasks
 
+APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+load 'rails/tasks/engine.rake'
+
+require "rspec/core/rake_task"
+RSpec::Core::RakeTask.new spec: 'app:db:migrate'
 task default: [:spec]

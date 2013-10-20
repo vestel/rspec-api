@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'spec_helper'
 require 'rspec-api/dsl'
 require_relative '../github_helper'

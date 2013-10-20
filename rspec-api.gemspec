@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^spec/})
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 1.9.0'
+  spec.required_ruby_version = '>= 1.9.3'
   spec.required_rubygems_version = ">= 1.3.6"
 
   spec.add_dependency 'rspec'
@@ -28,8 +28,8 @@ Gem::Specification.new do |spec|
 
   # For local
   spec.add_dependency 'rack-test'
-  spec.add_development_dependency 'activerecord'
-  spec.add_development_dependency 'rails'
+  spec.add_development_dependency 'activerecord', '>= 4.0'
+  spec.add_development_dependency 'railties', '>= 4.0'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'kaminari' # add pagination to models/controllers
