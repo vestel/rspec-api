@@ -5,7 +5,8 @@ RSpec::Matchers.define :have_pagination_links do |page|
     else
       links = response_headers['Link'] || '' # see http://git.io/CUz3-Q
       rels = links.split(',').map{|link| link[/<.+?>; rel="(.*)"$/, 1]}
-      rels.sort == ['first', 'prev']
+      # NOTE: On a 'paginated' page, 'prev' is the only required page to link
+      rels.include? 'prev'
     end
   end
 
