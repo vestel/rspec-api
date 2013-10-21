@@ -19,7 +19,9 @@ RSpec::Matchers.define :have_fields do |key, options = {}|
   after = options[:after]
 
   match do |items|
-    items.all?{|item| item[key.to_s].send(after) == value }
+    values = items.map{|item| item[key.to_s]}
+    values = values.map{|value| value.send(after)}  if after
+    values.all?{|v| v == value}
   end
 
   description do
