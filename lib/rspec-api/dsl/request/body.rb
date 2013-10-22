@@ -39,9 +39,9 @@ module DSL
 
       def should_be_sorted_by(sort_options)
         it {
-          if sort_options[:parameter].to_s == request_params['sort']
+          if sort_options[:name].to_s == request_params['sort']
             expect(response_body).to be_sorted_by(sort_options[:attribute], verse: :asc)
-          elsif "-#{sort_options[:parameter].to_s}" == request_params['sort']
+          elsif "-#{sort_options[:name].to_s}" == request_params['sort']
             expect(response_body).to be_sorted_by(sort_options[:attribute], verse: :desc)
           else
             expect(response_body).to be_sorted_by(nil)

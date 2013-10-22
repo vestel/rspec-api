@@ -1,3 +1,5 @@
+v0.2.1  - 2013/10/22 Fix bug on accept_sort
+
 v0.2.0  - 2013/10/20 Include specs for local and remote -- might break
                      compatibility since it requires both dependencies in the
                      Gemfile (e.g., might have conflicts with Rails 3)
