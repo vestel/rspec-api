@@ -41,7 +41,7 @@ resource 'Notifications' do
   accepts_filter :participating, on: :reason, comparing_with: -> participating, reason { participating == 'false' || ['author', 'mention'].include?(reason) } # TODO: JSON parse booleans
 
   get '/notifications', array: true do #, wip: true do
-    request do
+    request 'List your notifications' do
       respond_with :ok do |notifications|
         # NOTE: How do we make *internal* expectations not to be executed when
         #       a filter is passed? That is, a default value!
@@ -52,13 +52,13 @@ resource 'Notifications' do
   end
 
   get '/repos/:owner/:repo/notifications', array: true do
-    request 'given an existing', owner: existing(:user), repo: existing(:repo) do
+    request 'List your notifications in a repository', owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
   end
 
   put '/notifications' do
-    request do
+    request 'Mark as read' do
       respond_with :reset_content do
         # TODO: there is an optional last_read_at parameter; if set, it does
         # not *read* all the notification, but we need a subsequent call to
@@ -68,7 +68,7 @@ resource 'Notifications' do
   end
 
   put '/repos/:owner/:repo/notifications' do
-    request 'given an existing', owner: existing(:user), repo: existing(:repo) do
+    request 'Mark notifications as read in a repository', owner: existing(:user), repo: existing(:repo) do
       respond_with :reset_content do
         # TODO: there is an optional last_read_at parameter; if set, it does
         # not *read* all the notification, but we need a subsequent call to
@@ -78,13 +78,13 @@ resource 'Notifications' do
   end
 
   get '/notifications/threads/:id' do
-    request 'given an existing', id: existing(:thread_id) do
+    request 'View a single thread', id: existing(:thread_id) do
       respond_with :ok
     end
   end
 
   patch '/notifications/threads/:id' do
-    request 'given an existing', id: existing(:thread_id) do
+    request 'Mark a thread as read', id: existing(:thread_id) do
       respond_with :reset_content
     end
   end
@@ -102,13 +102,13 @@ resource 'ThreadSubscriptions' do
   has_attribute :thread_url, :url
 
   get '/notifications/threads/:id/subscription' do
-    request 'given an existing', id: existing(:thread_id) do
+    request 'Get a Thread Subscription', id: existing(:thread_id) do
       respond_with :ok
     end
   end
 
   put '/notifications/threads/:id/subscription' do
-    request 'given an existing', id: existing(:thread_id), subscribed: true, ignored: false do
+    request 'Set a Thread Subscription', id: existing(:thread_id), subscribed: true, ignored: false do
       respond_with :ok do |subscription|
         expect(subscription).to have_field :subscribed, value: true
         expect(subscription).to have_field :ignored, value: false
@@ -118,7 +118,7 @@ resource 'ThreadSubscriptions' do
 
   # NOTE: This is the only one missing, because I need to create one first!
   delete '/notifications/threads/:id/subscription', wip: true do
-    request 'given an existing', id: existing(:thread_id) do
+    request 'Delete a Thread Subscription', id: existing(:thread_id) do
       respond_with :no_content
     end
   end

@@ -13,7 +13,7 @@ resource 'Watchers' do
   has_attribute :url, :url
 
   get '/repos/:owner/:repo/subscribers', array: true do
-    request 'given an existing', owner: existing(:user), repo: existing(:repo) do
+    request 'List watchers', owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
   end
@@ -56,14 +56,14 @@ resource 'WatchedRepos' do
   has_attribute :created_at, :timestamp
   has_attribute :updated_at, :timestamp
 
-  get '/user/subscriptions', array: true do
-    request do
+  get '/users/:user/subscriptions', array: true do
+    request 'List repositories being watched', user: existing(:user) do
       respond_with :ok
     end
   end
-  
-  get '/users/:user/subscriptions', array: true do
-    request 'given an existing', user: existing(:user) do
+
+  get '/user/subscriptions', array: true do
+    request 'List repositories being watched by the authenticated user' do
       respond_with :ok
     end
   end
@@ -80,23 +80,23 @@ resource 'RepoSubscriptions' do
   has_attribute :repository_url, :url # only field different from ThreadSubscriptions
 
   get '/repos/:owner/:repo/subscription' do
-    request 'given an existing', owner: existing(:user), repo: existing(:repo) do
+    request 'Get a Repository Subscription', owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
   end
 
   put '/repos/:owner/:repo/subscription' do
-    request 'given an existing', owner: existing(:user), repo: existing(:repo), subscribed: true, ignored: false do
+    request 'Set a Repository Subscription', owner: existing(:user), repo: existing(:repo), subscribed: true, ignored: false do
       respond_with :ok do |subscription|
         expect(subscription).to have_field :subscribed, value: true
         expect(subscription).to have_field :ignored, value: false
       end
     end
   end
-  
+
   # NOTE: This is the only one missing, because I need to create one first!
   delete '/repos/:owner/:repo/subscription', wip: true do
-    request 'given an existing', owner: existing(:user), repo: existing(:repo) do
+    request 'Delete a Repository Subscription', owner: existing(:user), repo: existing(:repo) do
       respond_with :no_content
     end
   end

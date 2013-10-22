@@ -24,33 +24,33 @@ resource 'Stargazers' do
   has_attribute :type, :string # not documented
   has_attribute :site_admin, :boolean # not documented
 
-  # get '/repos/:owner/:repo/stargazers', array: true do
-  #   request 'given an existing', owner: existing(:user), repo: existing(:repo) do
-  #     respond_with :ok
-  #   end
-  # end
-  #
-  # get '/user/starred/:owner/:repo' do
-  #   request 'given a starred', owner: existing(:user), repo: existing(:starred_repo) do
-  #     respond_with :no_content
-  #   end
-  #
-  #   request 'given an unstarred', owner: existing(:user), repo: existing(:unstarred_repo) do
-  #     respond_with :not_found
-  #   end
-  # end
-  #
-  # put '/user/starred/:owner/:repo' do
-  #   request 'given an existing', owner: existing(:user), repo: existing(:repo) do
-  #     respond_with :no_content
-  #   end
-  # end
-  #
-  # delete '/user/starred/:owner/:repo' do
-  #   request 'given an existing', owner: existing(:user), repo: existing(:repo) do
-  #     respond_with :no_content
-  #   end
-  # end
+  get '/repos/:owner/:repo/stargazers', array: true do
+    request 'List Stargazers', owner: existing(:user), repo: existing(:repo) do
+      respond_with :ok
+    end
+  end
+
+  get '/user/starred/:owner/:repo' do
+    request 'Check if you are starring a starred repository', owner: existing(:user), repo: existing(:starred_repo) do
+      respond_with :no_content
+    end
+
+    request 'Check if you are starring an unstarred repository', owner: existing(:user), repo: existing(:unstarred_repo) do
+      respond_with :not_found
+    end
+  end
+
+  put '/user/starred/:owner/:repo' do
+    request 'Star a repository', owner: existing(:user), repo: existing(:repo) do
+      respond_with :no_content
+    end
+  end
+
+  delete '/user/starred/:owner/:repo' do
+    request 'Unstar a repository', owner: existing(:user), repo: existing(:repo) do
+      respond_with :no_content
+    end
+  end
 end
 
 resource 'StarredRepos' do
@@ -93,7 +93,7 @@ resource 'StarredRepos' do
   # TODO: a sort with an extra direction: parameter!
   # accepts_sort :created, on: :created_at
   # accepts_sort :updated, on: :updated_at
-  # 
+  #
   # GIGS could be this
   # accepts_sort 'created', on: :created_at, verse: :asc
   # accepts_sort '-created', on: :created_at, verse: :desc
@@ -101,16 +101,16 @@ resource 'StarredRepos' do
   # and GITHUB could be this
   # accepts_sort :created, on: :created_at, verse: :desc
   # accepts_sort :created, on: :created_at, verse: :asc
-  
-  get '/user/starred', array: true do
-    request do
-      respond_with :ok # by default: sorted by created_at
+
+  get '/users/:user/starred', array: true do
+    request 'List repositories being starred', user: existing(:user) do
+      respond_with :ok
     end
   end
 
-  # get '/users/:user/starred', array: true do
-  #   request 'given an existing', user: existing(:user) do
-  #     respond_with :ok
-  #   end
-  # end
+  get '/user/starred', array: true do
+    request 'List repositories being starred by the authenticated user' do
+      respond_with :ok # by default: sorted by created_at
+    end
+  end
 end

@@ -41,7 +41,7 @@ resource 'Repos' do
   has_attribute :updated_at, :timestamp
 
   get '/users/:user/repos', array: true do
-    request 'given an existing', user: existing(:user) do
+    request 'List user repositories', user: existing(:user) do
       respond_with :ok
     end
   end

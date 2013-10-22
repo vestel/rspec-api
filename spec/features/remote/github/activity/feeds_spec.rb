@@ -42,7 +42,7 @@ resource 'Feeds' do
   end
 
   get '/feeds' do
-    request do
+    request 'List Feeds' do
       respond_with :ok
     end
   end
