@@ -46,14 +46,14 @@ resource 'Gists' do
   has_attribute :comments, :integer
   has_attribute :comments_url, :url
   has_attribute :html_url, :url
-  has_attribute :git_pull_url, :string # should be git:// url
-  has_attribute :git_push_url, :string # should be git@ url
+  has_attribute :git_pull_url, :string # should be url: :public_git (git:// url)
+  has_attribute :git_push_url, :string # should be url: :private_git (git@ url)
   has_attribute :created_at, :timestamp
   has_attribute :forks_url, :url        # not documented for index but it's there:
   has_attribute :commits_url, :url      # not documented for index but it's there:
   has_attribute :updated_at, :timestamp # not documented for index but it's there:
 
-  # accepts_filter :since, on: :updated_at, comparing_with: -> since, updated_at {since <= updated_at}
+  accepts_filter :since, on: :updated_at, comparing_with: -> since, updated_at {since <= updated_at}
 
   get '/users/:user/gists', array: true do
     request 'List a user’s gists', user: existing(:user) do
