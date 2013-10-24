@@ -17,7 +17,7 @@ module GithubRoute
       when :blob_sha then '700f3882cc26763273b4cd89badc9c745b111cad'
       when :commit_sha then 'dbed42daee4105e48cc2f618a849c02f63924e3c'
       when :tree_sha then 'f784ee6cb1da5bea83f9dfc882763d2239028f64'
-      when :starred_repo then 'dotfiles'
+      when :starred_repo then 'neverfails'
       when :unstarred_repo then 'cancan'
       when :gist_id then '0d7b597d822102148810'
       when :starred_gist_id then '1e31c19a5fb3c5330193'
