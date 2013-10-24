@@ -8,8 +8,8 @@ resource 'Stargazers' do
 
   has_attribute :login, :string
   has_attribute :id, :integer
-  has_attribute :avatar_url, :url
-  has_attribute :gravatar_id, :string
+  has_attribute :avatar_url, :url, can_be_nil: true
+  has_attribute :gravatar_id, :string, can_be_nil: true
   has_attribute :url, :url
   has_attribute :html_url, :url # not documented
   has_attribute :followers_url, :url # not documented
@@ -60,7 +60,7 @@ resource 'StarredRepos' do
   has_attribute :owner, :hash do
     has_attribute :login, :string
     has_attribute :id, :integer
-    has_attribute :avatar_url, :url
+    has_attribute :avatar_url, :url, can_be_nil: true
     has_attribute :gravatar_id, :string, can_be_nil: true
     has_attribute :url, :url
   end

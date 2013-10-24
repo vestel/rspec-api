@@ -11,10 +11,10 @@ resource 'Events' do
   has_attribute :actor, :hash, can_be_nil: true do
     # has_attribute :id, :integer  # Sometimes it's missing!!
     # has_attribute :login, :string  # Sometimes it's missing!!
-    # has_attribute :gravatar_id, :string  # Sometimes it's missing!!
+    # has_attribute :gravatar_id, :string, can_be_nil: true  # Sometimes it's missing!!
     # e.g. {"url"=>"https://api.github.com/users/", "avatar_url"=>"https://a248.e.akamai.net/assets.github.com/images/gravatars/gravatar-user-420.png"}
     has_attribute :url, :url
-    has_attribute :avatar_url, :url
+    has_attribute :avatar_url, :url, can_be_nil: true
   end
   has_attribute :repo, :hash do
     # has_attribute :id, :integer  # Sometimes it's missing!!
@@ -31,7 +31,7 @@ resource 'Events' do
   #   has_attribute :login, :string
   #   has_attribute :gravatar_id, :string, can_be_nil: true
   #   has_attribute :url, :url
-  #   has_attribute :avatar_url, :url
+  #   has_attribute :avatar_url, :url, can_be_nil: true
   # end
 
   accepts_page :page

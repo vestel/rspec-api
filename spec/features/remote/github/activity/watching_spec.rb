@@ -2,19 +2,23 @@ require 'spec_helper'
 require 'rspec-api/dsl'
 require_relative '../github_helper'
 
-# http://developer.github.com/v3/activity/warching/
+# http://developer.github.com/v3/activity/watching/
 resource 'Watchers' do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :login, :string
   has_attribute :id, :integer
-  has_attribute :avatar_url, :url
-  has_attribute :gravatar_id, :string
+  has_attribute :avatar_url, :url, can_be_nil: true
+  has_attribute :gravatar_id, :string, can_be_nil: true
   has_attribute :url, :url
 
   get '/repos/:owner/:repo/subscribers', array: true do
-    request 'List watchers', owner: existing(:user), repo: existing(:repo) do
+    request owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
+    end
+
+    request owner: existing(:user), repo: unknown(:repo) do
+      respond_with :not_found
     end
   end
 end
@@ -26,7 +30,7 @@ resource 'WatchedRepos' do
   has_attribute :owner, :hash do
     has_attribute :login, :string
     has_attribute :id, :integer
-    has_attribute :avatar_url, :url
+    has_attribute :avatar_url, :url, can_be_nil: true
     has_attribute :gravatar_id, :string, can_be_nil: true
     has_attribute :url, :url
   end
