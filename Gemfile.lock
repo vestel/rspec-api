@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rspec-api (0.2.1)
+    rspec-api (0.3.0)
       activesupport
       faraday
       faraday-http-cache (>= 0.3.0)

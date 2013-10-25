@@ -1,3 +1,8 @@
+v0.3.0  - 2013/10/24 Separate JSON type and format in has_attribute -- might
+                     break code like `has_attribute :page, :url`, since this is
+                     now `has_attribute :page, :string, format: :url` -- the
+                     only accepted types are now the 6 basic JSON types
+
 v0.2.1  - 2013/10/22 Fix bug on accept_sort
 
 v0.2.0  - 2013/10/20 Include specs for local and remote -- might break

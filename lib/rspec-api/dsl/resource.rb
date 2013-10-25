@@ -23,6 +23,7 @@ module DSL
       define_action :delete
 
       def has_attribute(name, type, options = {})
+        check_valid_json_type type
         parent = (@attribute_ancestors || []).inject(rspec_api) {|chain, step| chain[:attributes][step]}
         (parent[:attributes] ||= {})[name] = options.merge(type: type)
         nested_attribute(name, &Proc.new) if block_given?
@@ -51,6 +52,13 @@ module DSL
         (@attribute_ancestors ||= []).push name
         yield
         @attribute_ancestors.pop
+      end
+
+      def check_valid_json_type(type)
+        valid_json_types = [:number, :string, :boolean, :array, :object, :null]
+        unless valid_json_types.include? type
+          raise "Either pass a hash of size 1 or a symbol of #{valid_json_types}"
+        end
       end
     end
   end

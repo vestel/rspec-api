@@ -9,8 +9,8 @@ resource 'Gists' do
   has_attribute :content, :string
   has_attribute :encoding, :string
   has_attribute :sha, :string
-  has_attribute :size, :integer
-  has_attribute :url, :url # undocumented
+  has_attribute :size, :number, format: :integer
+  has_attribute :url, :string, format: :url # undocumented
 
 
   get '/repos/:owner/:repo/git/blobs/:sha' do

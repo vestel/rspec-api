@@ -7,20 +7,20 @@ resource 'Stargazers' do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :login, :string
-  has_attribute :id, :integer
-  has_attribute :avatar_url, :url, can_be_nil: true
+  has_attribute :id, :number, format: :integer
+  has_attribute :avatar_url, :string, format: :url, can_be_nil: true
   has_attribute :gravatar_id, :string, can_be_nil: true
-  has_attribute :url, :url
-  has_attribute :html_url, :url # not documented
-  has_attribute :followers_url, :url # not documented
-  has_attribute :following_url, :url # not documented
-  has_attribute :gists_url, :url # not documented
-  has_attribute :starred_url, :url # not documented
-  has_attribute :subscriptions_url, :url # not documented
-  has_attribute :organizations_url, :url # not documented
-  has_attribute :repos_url, :url # not documented
-  has_attribute :events_url, :url # not documented
-  has_attribute :received_events_url, :url # not documented
+  has_attribute :url, :string, format: :url
+  has_attribute :html_url, :string, format: :url # not documented
+  has_attribute :followers_url, :string, format: :url # not documented
+  has_attribute :following_url, :string, format: :url # not documented
+  has_attribute :gists_url, :string, format: :url # not documented
+  has_attribute :starred_url, :string, format: :url # not documented
+  has_attribute :subscriptions_url, :string, format: :url # not documented
+  has_attribute :organizations_url, :string, format: :url # not documented
+  has_attribute :repos_url, :string, format: :url # not documented
+  has_attribute :events_url, :string, format: :url # not documented
+  has_attribute :received_events_url, :string, format: :url # not documented
   has_attribute :type, :string # not documented
   has_attribute :site_admin, :boolean # not documented
 
@@ -56,39 +56,39 @@ end
 resource 'StarredRepos' do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :id, :integer
-  has_attribute :owner, :hash do
+  has_attribute :id, :number, format: :integer
+  has_attribute :owner, :object do
     has_attribute :login, :string
-    has_attribute :id, :integer
-    has_attribute :avatar_url, :url, can_be_nil: true
+    has_attribute :id, :number, format: :integer
+    has_attribute :avatar_url, :string, format: :url, can_be_nil: true
     has_attribute :gravatar_id, :string, can_be_nil: true
-    has_attribute :url, :url
+    has_attribute :url, :string, format: :url
   end
   has_attribute :name, :string
   has_attribute :full_name, :string
   has_attribute :description, :string
   has_attribute :private, :boolean
   has_attribute :fork, :boolean
-  has_attribute :url, :url
-  has_attribute :html_url, :url
-  has_attribute :clone_url, :url
+  has_attribute :url, :string, format: :url
+  has_attribute :html_url, :string, format: :url
+  has_attribute :clone_url, :string, format: :url
   has_attribute :git_url, :string # git url
   has_attribute :ssh_url, :string # should change URL to accept git@
-  has_attribute :svn_url, :url
+  has_attribute :svn_url, :string, format: :url
   has_attribute :mirror_url, :string, can_be_nil: true # should change URL to accept git://
-  has_attribute :homepage, :url, can_be_nil: true
+  has_attribute :homepage, :string, format: :url, can_be_nil: true
   has_attribute :language, :string, can_be_nil: true
-  has_attribute :forks, :integer
-  has_attribute :forks_count, :integer
-  has_attribute :watchers, :integer
-  has_attribute :watchers_count, :integer
-  has_attribute :size, :integer
+  has_attribute :forks, :number, format: :integer
+  has_attribute :forks_count, :number, format: :integer
+  has_attribute :watchers, :number, format: :integer
+  has_attribute :watchers_count, :number, format: :integer
+  has_attribute :size, :number, format: :integer
   has_attribute :master_branch, :string
-  has_attribute :open_issues, :integer
-  has_attribute :open_issues_count, :integer
-  has_attribute :pushed_at, :timestamp, can_be_nil: true
-  has_attribute :created_at, :timestamp
-  has_attribute :updated_at, :timestamp
+  has_attribute :open_issues, :number, format: :integer
+  has_attribute :open_issues_count, :number, format: :integer
+  has_attribute :pushed_at, :string, format: :timestamp, can_be_nil: true
+  has_attribute :created_at, :string, format: :timestamp
+  has_attribute :updated_at, :string, format: :timestamp
 
   # TODO: a sort with an extra direction: parameter!
   # accepts_sort :created, on: :created_at

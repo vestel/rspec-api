@@ -6,17 +6,17 @@ require_relative '../github_helper'
 resource 'GistComments' do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :id, :integer
-  has_attribute :url, :url
+  has_attribute :id, :number, format: :integer
+  has_attribute :url, :string, format: :url
   has_attribute :body, :string
-  has_attribute :user, :hash do
+  has_attribute :user, :object do
     has_attribute :login, :string
-    has_attribute :id, :integer
-    has_attribute :avatar_url, :url, can_be_nil: true
+    has_attribute :id, :number, format: :integer
+    has_attribute :avatar_url, :string, format: :url, can_be_nil: true
     has_attribute :gravatar_id, :string, can_be_nil: true
-    has_attribute :url, :url
+    has_attribute :url, :string, format: :url
   end
-  has_attribute :created_at, :timestamp
+  has_attribute :created_at, :string, format: :timestamp
 
   get '/gists/:gist_id/comments', array: true do
     request 'given an existing', gist_id: existing(:gist_id) do

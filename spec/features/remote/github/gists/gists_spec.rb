@@ -8,50 +8,50 @@ require_relative '../github_helper'
 resource 'Gists' do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :url, :url
+  has_attribute :url, :string, format: :url
   has_attribute :id, :string
   has_attribute :description, :string, can_be_nil: true
   has_attribute :public, :boolean
-  has_attribute :user, :hash do
+  has_attribute :user, :object do
     has_attribute :login, :string
-    has_attribute :id, :integer
-    has_attribute :avatar_url, :url, can_be_nil: true
+    has_attribute :id, :number, format: :integer
+    has_attribute :avatar_url, :string, format: :url, can_be_nil: true
     has_attribute :gravatar_id, :string, can_be_nil: true
-    has_attribute :url, :url
-    has_attribute :html_url, :url          # not documented for index but it's there:
-    has_attribute :followers_url, :url     # not documented for index but it's there:
-    has_attribute :following_url, :url     # not documented for index but it's there:
-    has_attribute :gists_url, :url         # not documented for index but it's there:
-    has_attribute :starred_url, :url       # not documented for index but it's there:
-    has_attribute :subscriptions_url, :url # not documented for index but it's there:
-    has_attribute :organizations_url, :url # not documented for index but it's there:
-    has_attribute :repos_url, :url         # not documented for index but it's there:
-    has_attribute :events_url, :url        # not documented for index but it's there:
+    has_attribute :url, :string, format: :url
+    has_attribute :html_url, :string, format: :url          # not documented for index but it's there:
+    has_attribute :followers_url, :string, format: :url     # not documented for index but it's there:
+    has_attribute :following_url, :string, format: :url     # not documented for index but it's there:
+    has_attribute :gists_url, :string, format: :url         # not documented for index but it's there:
+    has_attribute :starred_url, :string, format: :url       # not documented for index but it's there:
+    has_attribute :subscriptions_url, :string, format: :url # not documented for index but it's there:
+    has_attribute :organizations_url, :string, format: :url # not documented for index but it's there:
+    has_attribute :repos_url, :string, format: :url         # not documented for index but it's there:
+    has_attribute :events_url, :string, format: :url        # not documented for index but it's there:
     has_attribute :type, :string           # not documented for index but it's there:
     has_attribute :site_admin, :boolean    # not documented for index but it's there:
   end
-  has_attribute :files, :hash
+  has_attribute :files, :object
 
   # TODO: cannot have nested attributes for now because the KEY changes (and
   # it is the filename), so need new syntax for this
-  # has_attribute :files, :hash do
-  #   has_attribute :'ring.erl', :hash do
-  #     has_attribute :size, :integer
+  # has_attribute :files, :object do
+  #   has_attribute :'ring.erl', :object do
+  #     has_attribute :size, :number, format: :integer
   #     has_attribute :filename, :string
-  #     has_attribute :raw_url, :url
+  #     has_attribute :raw_url, :string, format: :url
   #     # has_attribute :type, :string                       # not documented for index but it's there:
   #     # has_attribute :language, :string, can_be_nil: true # not documented for index but it's there:
   #   end
   # end
-  has_attribute :comments, :integer
-  has_attribute :comments_url, :url
-  has_attribute :html_url, :url
+  has_attribute :comments, :number, format: :integer
+  has_attribute :comments_url, :string, format: :url
+  has_attribute :html_url, :string, format: :url
   has_attribute :git_pull_url, :string # should be url: :public_git (git:// url)
   has_attribute :git_push_url, :string # should be url: :private_git (git@ url)
-  has_attribute :created_at, :timestamp
-  has_attribute :forks_url, :url        # not documented for index but it's there:
-  has_attribute :commits_url, :url      # not documented for index but it's there:
-  has_attribute :updated_at, :timestamp # not documented for index but it's there:
+  has_attribute :created_at, :string, format: :timestamp
+  has_attribute :forks_url, :string, format: :url        # not documented for index but it's there:
+  has_attribute :commits_url, :string, format: :url      # not documented for index but it's there:
+  has_attribute :updated_at, :string, format: :timestamp # not documented for index but it's there:
 
   accepts_filter :since, on: :updated_at, comparing_with: -> since, updated_at {since <= updated_at}
 

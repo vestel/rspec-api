@@ -4,10 +4,10 @@ require_relative 'gigs_helper'
 
 resource 'Concerts' do
   has_attribute :where, :string
-  has_attribute :year, :integer, can_be_nil: true
+  has_attribute :year, :number, format: :integer, can_be_nil: true
   has_attribute :performers, :array do
     has_attribute :name, :string
-    has_attribute :website, :url, can_be_nil: true
+    has_attribute :website, :string, format: :url, can_be_nil: true
   end
 
   accepts_filter :when, on: :year

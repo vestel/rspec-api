@@ -7,26 +7,26 @@ resource 'Commits' do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :sha, :string
-  has_attribute :url, :url
-  has_attribute :html_url, :url # not documented
-  has_attribute :author, :hash do
-    has_attribute :date, :timestamp
+  has_attribute :url, :string, format: :url
+  has_attribute :html_url, :string, format: :url # not documented
+  has_attribute :author, :object do
+    has_attribute :date, :string, format: :timestamp
     has_attribute :name, :string
-    has_attribute :email, :email
+    has_attribute :email, :string, format: :email
   end
-  has_attribute :committer, :hash do
-    has_attribute :date, :timestamp
+  has_attribute :committer, :object do
+    has_attribute :date, :string, format: :timestamp
     has_attribute :name, :string
-    has_attribute :email, :email
+    has_attribute :email, :string, format: :email
   end
   has_attribute :message, :string
-  has_attribute :tree, :hash do
-    has_attribute :url, :url
+  has_attribute :tree, :object do
+    has_attribute :url, :string, format: :url
     has_attribute :sha, :string
   end
   has_attribute :parents, :array do
-    has_attribute :url, :url
-    has_attribute :html_url, :url # not documented
+    has_attribute :url, :string, format: :url
+    has_attribute :html_url, :string, format: :url # not documented
     has_attribute :sha, :string
   end
 

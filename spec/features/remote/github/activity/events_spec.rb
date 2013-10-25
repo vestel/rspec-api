@@ -8,30 +8,30 @@ resource 'Events' do
 
   has_attribute :id, :string
   has_attribute :type, :string
-  has_attribute :actor, :hash, can_be_nil: true do
-    # has_attribute :id, :integer  # Sometimes it's missing!!
+  has_attribute :actor, :object, can_be_nil: true do
+    # has_attribute :id, :number, format: :integer  # Sometimes it's missing!!
     # has_attribute :login, :string  # Sometimes it's missing!!
     # has_attribute :gravatar_id, :string, can_be_nil: true  # Sometimes it's missing!!
     # e.g. {"url"=>"https://api.github.com/users/", "avatar_url"=>"https://a248.e.akamai.net/assets.github.com/images/gravatars/gravatar-user-420.png"}
-    has_attribute :url, :url
-    has_attribute :avatar_url, :url, can_be_nil: true
+    has_attribute :url, :string, format: :url
+    has_attribute :avatar_url, :string, format: :url, can_be_nil: true
   end
-  has_attribute :repo, :hash do
-    # has_attribute :id, :integer  # Sometimes it's missing!!
+  has_attribute :repo, :object do
+    # has_attribute :id, :number, format: :integer  # Sometimes it's missing!!
     # e.g. {"name"=>"/", "url"=>"https://api.github.com/repos//"}
     has_attribute :name, :string
-    has_attribute :url, :url
+    has_attribute :url, :string, format: :url
   end
-  has_attribute :payload, :hash # See http://git.io/Uln6EQ for types
+  has_attribute :payload, :object # See http://git.io/Uln6EQ for types
   has_attribute :public, :boolean
-  has_attribute :created_at, :timestamp
+  has_attribute :created_at, :string, format: :timestamp
   # NOTE: Sometimes org is missing (instead of being nil), so cannot test this:
-  # has_attribute :org, :hash do
-  #   has_attribute :id, :integer
+  # has_attribute :org, :object do
+  #   has_attribute :id, :number, format: :integer
   #   has_attribute :login, :string
   #   has_attribute :gravatar_id, :string, can_be_nil: true
-  #   has_attribute :url, :url
-  #   has_attribute :avatar_url, :url, can_be_nil: true
+  #   has_attribute :url, :string, format: :url
+  #   has_attribute :avatar_url, :string, format: :url, can_be_nil: true
   # end
 
   accepts_page :page

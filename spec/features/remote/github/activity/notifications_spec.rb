@@ -7,34 +7,34 @@ resource 'Notifications' do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :id, :string
-  has_attribute :repository, :hash do
-    has_attribute :id, :integer
-    has_attribute :owner, :hash do
+  has_attribute :repository, :object do
+    has_attribute :id, :number, format: :integer
+    has_attribute :owner, :object do
       has_attribute :login, :string
-      has_attribute :id, :integer
-      has_attribute :avatar_url, :url, can_be_nil: true
+      has_attribute :id, :number, format: :integer
+      has_attribute :avatar_url, :string, format: :url, can_be_nil: true
       has_attribute :gravatar_id, :string, can_be_nil: true
-      has_attribute :url, :url
+      has_attribute :url, :string, format: :url
     end
     has_attribute :name, :string
     has_attribute :full_name, :string
     has_attribute :description, :string
     has_attribute :private, :boolean
     has_attribute :fork, :boolean
-    has_attribute :url, :url
-    has_attribute :html_url, :url
+    has_attribute :url, :string, format: :url
+    has_attribute :html_url, :string, format: :url
   end
-  has_attribute :subject, :hash do
+  has_attribute :subject, :object do
     has_attribute :title, :string
-    has_attribute :url, :url
-    has_attribute :latest_comment_url, :url
+    has_attribute :url, :string, format: :url
+    has_attribute :latest_comment_url, :string, format: :url
     has_attribute :type, :string
   end
   has_attribute :reason, :string
   has_attribute :unread, :boolean
-  has_attribute :updated_at, :timestamp
-  has_attribute :last_read_at, :timestamp, can_be_nil: true
-  has_attribute :url, :url
+  has_attribute :updated_at, :string, format: :timestamp
+  has_attribute :last_read_at, :string, format: :timestamp, can_be_nil: true
+  has_attribute :url, :string, format: :url
 
   accepts_filter :since, on: :updated_at, comparing_with: -> since, updated_at {since <= updated_at} # TODO: JSON parse timestamps
   accepts_filter :all, on: :unread, comparing_with: -> all, unread { all == 'true' || unread == 'true' } # TODO: JSON parse booleans
@@ -97,9 +97,9 @@ resource 'ThreadSubscriptions' do
   has_attribute :subscribed, :boolean
   has_attribute :ignored, :boolean
   has_attribute :reason, :string, can_be_nil: true
-  has_attribute :created_at, :timestamp
-  has_attribute :url, :url
-  has_attribute :thread_url, :url
+  has_attribute :created_at, :string, format: :timestamp
+  has_attribute :url, :string, format: :url
+  has_attribute :thread_url, :string, format: :url
 
   get '/notifications/threads/:id/subscription' do
     request 'Get a Thread Subscription', id: existing(:thread_id) do
