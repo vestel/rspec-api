@@ -12,12 +12,12 @@ resource 'Commits' do
   has_attribute :author, :hash do
     has_attribute :date, :timestamp
     has_attribute :name, :string
-    has_attribute :email, :string # TODO: type email
+    has_attribute :email, :email
   end
   has_attribute :committer, :hash do
     has_attribute :date, :timestamp
     has_attribute :name, :string
-    has_attribute :email, :string # TODO: type email
+    has_attribute :email, :email
   end
   has_attribute :message, :string
   has_attribute :tree, :hash do

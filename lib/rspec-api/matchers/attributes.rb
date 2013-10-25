@@ -28,6 +28,7 @@ def matches_type?(value, type)
     when :url then value =~ URI::regexp
     when :timestamp then DateTime.iso8601 value rescue false
     when :boolean then [TrueClass, FalseClass].include? value.class
+    when :email then value =~ %r{(?<name>.+?)@(?<host>.+?)\.(?<domain>.+?)}
     else value.is_a? type.to_s.classify.constantize
   end
 end
