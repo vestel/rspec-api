@@ -3,26 +3,26 @@ require 'rspec-api/dsl'
 require_relative '../github_helper'
 
 # http://developer.github.com/v3/activity/starring/
-resource 'Stargazers' do
+resource :stargazer do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :login, :string
-  has_attribute :id, :number, format: :integer
-  has_attribute :avatar_url, :string, format: :url, can_be_nil: true
-  has_attribute :gravatar_id, :string, can_be_nil: true
-  has_attribute :url, :string, format: :url
-  has_attribute :html_url, :string, format: :url # not documented
-  has_attribute :followers_url, :string, format: :url # not documented
-  has_attribute :following_url, :string, format: :url # not documented
-  has_attribute :gists_url, :string, format: :url # not documented
-  has_attribute :starred_url, :string, format: :url # not documented
-  has_attribute :subscriptions_url, :string, format: :url # not documented
-  has_attribute :organizations_url, :string, format: :url # not documented
-  has_attribute :repos_url, :string, format: :url # not documented
-  has_attribute :events_url, :string, format: :url # not documented
-  has_attribute :received_events_url, :string, format: :url # not documented
-  has_attribute :type, :string # not documented
-  has_attribute :site_admin, :boolean # not documented
+  has_attribute :login, type: :string
+  has_attribute :id, type: {number: :integer}
+  has_attribute :avatar_url, type: [:null, string: :url]
+  has_attribute :gravatar_id, type: [:null, :string]
+  has_attribute :url, type: {string: :url}
+  has_attribute :html_url, type: {string: :url} # not documented
+  has_attribute :followers_url, type: {string: :url} # not documented
+  has_attribute :following_url, type: {string: :url} # not documented
+  has_attribute :gists_url, type: {string: :url} # not documented
+  has_attribute :starred_url, type: {string: :url} # not documented
+  has_attribute :subscriptions_url, type: {string: :url} # not documented
+  has_attribute :organizations_url, type: {string: :url} # not documented
+  has_attribute :repos_url, type: {string: :url} # not documented
+  has_attribute :events_url, type: {string: :url} # not documented
+  has_attribute :received_events_url, type: {string: :url} # not documented
+  has_attribute :type, type: :string # not documented
+  has_attribute :site_admin, type: :boolean # not documented
 
   get '/repos/:owner/:repo/stargazers', array: true do
     request 'List Stargazers', owner: existing(:user), repo: existing(:repo) do
@@ -53,54 +53,50 @@ resource 'Stargazers' do
   end
 end
 
-resource 'StarredRepos' do
+resource :starred_repo do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :id, :number, format: :integer
-  has_attribute :owner, :object do
-    has_attribute :login, :string
-    has_attribute :id, :number, format: :integer
-    has_attribute :avatar_url, :string, format: :url, can_be_nil: true
-    has_attribute :gravatar_id, :string, can_be_nil: true
-    has_attribute :url, :string, format: :url
+  has_attribute :id, type: {number: :integer}
+  has_attribute :owner, type: :object do
+    has_attribute :login, type: :string
+    has_attribute :id, type: {number: :integer}
+    has_attribute :avatar_url, type: [:null, string: :url]
+    has_attribute :gravatar_id, type: [:null, :string]
+    has_attribute :url, type: {string: :url}
   end
-  has_attribute :name, :string
-  has_attribute :full_name, :string
-  has_attribute :description, :string
-  has_attribute :private, :boolean
-  has_attribute :fork, :boolean
-  has_attribute :url, :string, format: :url
-  has_attribute :html_url, :string, format: :url
-  has_attribute :clone_url, :string, format: :url
-  has_attribute :git_url, :string # git url
-  has_attribute :ssh_url, :string # should change URL to accept git@
-  has_attribute :svn_url, :string, format: :url
-  has_attribute :mirror_url, :string, can_be_nil: true # should change URL to accept git://
-  has_attribute :homepage, :string, format: :url, can_be_nil: true
-  has_attribute :language, :string, can_be_nil: true
-  has_attribute :forks, :number, format: :integer
-  has_attribute :forks_count, :number, format: :integer
-  has_attribute :watchers, :number, format: :integer
-  has_attribute :watchers_count, :number, format: :integer
-  has_attribute :size, :number, format: :integer
-  has_attribute :master_branch, :string
-  has_attribute :open_issues, :number, format: :integer
-  has_attribute :open_issues_count, :number, format: :integer
-  has_attribute :pushed_at, :string, format: :timestamp, can_be_nil: true
-  has_attribute :created_at, :string, format: :timestamp
-  has_attribute :updated_at, :string, format: :timestamp
+  has_attribute :name, type: :string
+  has_attribute :full_name, type: :string
+  has_attribute :description, type: :string
+  has_attribute :private, type: :boolean
+  has_attribute :fork, type: :boolean
+  has_attribute :url, type: {string: :url}
+  has_attribute :html_url, type: {string: :url}
+  has_attribute :clone_url, type: {string: :url}
+  has_attribute :git_url, type: :string # git url
+  has_attribute :ssh_url, type: :string # should change URL to accept git@
+  has_attribute :svn_url, type: {string: :url}
+  has_attribute :mirror_url, type: [:null, :string] # should change URL to accept git://
+  has_attribute :homepage, type: [:null, string: :url]
+  has_attribute :language, type: [:null, :string]
+  has_attribute :forks, type: {number: :integer}
+  has_attribute :forks_count, type: {number: :integer}
+  has_attribute :watchers, type: {number: :integer}
+  has_attribute :watchers_count, type: {number: :integer}
+  has_attribute :size, type: {number: :integer}
+  has_attribute :master_branch, type: :string
+  has_attribute :open_issues, type: {number: :integer}
+  has_attribute :open_issues_count, type: {number: :integer}
+  has_attribute :pushed_at, type: [:null, string: :timestamp]
+  has_attribute :created_at, type: {string: :timestamp}
+  has_attribute :updated_at, type: {string: :timestamp}
 
-  # TODO: a sort with an extra direction: parameter!
-  # accepts_sort :created, on: :created_at
-  # accepts_sort :updated, on: :updated_at
-  #
-  # GIGS could be this
-  # accepts_sort 'created', on: :created_at, verse: :asc
-  # accepts_sort '-created', on: :created_at, verse: :desc
-  #
-  # and GITHUB could be this
-  # accepts_sort :created, on: :created_at, verse: :desc
-  # accepts_sort :created, on: :created_at, verse: :asc
+  accepts_sort 'updated', extra_fields: {direction: 'asc'}, by: :pushed_at, verse: :asc
+  accepts_sort 'updated', extra_fields: {direction: 'desc'}, by: :pushed_at, verse: :desc
+  # NOTE: There is an additional sorting 'created' by date that the repos
+  #       were starred. Unfortunately, this timestamp is not included in
+  #       the result, so there is no way to test it! Would be something like:
+  # accepts_sort 'created', extra_fields: {direction: 'asc'}, by: :starred_at, verse: :asc
+  # accepts_sort 'created', extra_fields: {direction: 'desc'}, by: :starred_at, verse: :desc
 
   get '/users/:user/starred', array: true do
     request 'List repositories being starred', user: existing(:user) do

@@ -22,11 +22,30 @@ module DSL
       define_action :post
       define_action :delete
 
-      def has_attribute(name, type, options = {})
-        check_valid_json_type type
-        parent = (@attribute_ancestors || []).inject(rspec_api) {|chain, step| chain[:attributes][step]}
-        (parent[:attributes] ||= {})[name] = options.merge(type: type)
-        nested_attribute(name, &Proc.new) if block_given?
+
+      def has_attribute(name, options = {}, &block)
+        if block_given?
+          # options[:type] can be symbol, hash or array
+          # but if you have a block we must make it a hash
+          options[:type] = Hash[*Array.wrap(options[:type]).map{|x| x.is_a?(Hash) ? [x.keys.first, x.values.first] : [x, {}]}.flatten] unless options[:type].is_a? Hash
+          # we only set the block as the new format of Object and Array
+          nest_attributes(options[:type], &Proc.new)
+        end
+        if @attribute_ancestors.present?
+          hash = @attribute_ancestors.last
+          hash.slice(:object, :array).each do |type, _|
+            (hash[type] ||= {})[name] = options
+          end
+        else
+          hash = (rspec_api[:attributes] ||= {})
+          hash[name] = options
+        end
+      end
+
+      def nest_attributes(hash, &block)
+        (@attribute_ancestors ||= []).push hash
+        yield
+        @attribute_ancestors.pop
       end
 
       def accepts_page(page_parameter)
@@ -34,31 +53,15 @@ module DSL
       end
 
       def accepts_sort(sort_parameter, options={})
-        rspec_api[:sort] = {name: sort_parameter, attribute: options[:on]}
+        (rspec_api[:sorts] ||= []) << options.merge(name: 'sort', value: sort_parameter)
       end
 
-      # TODO: the second 'accepts_filter' should not override the first, but add
       def accepts_filter(filter_parameter, options={})
-        rspec_api[:filter] = options.merge(name: filter_parameter)
+        (rspec_api[:filters] ||= []) << options.merge(name: filter_parameter)
       end
 
       def accepts_callback(callback_parameter)
-        rspec_api[:callback] = {name: callback_parameter, value: 'a_callback'}
-      end
-
-    private
-
-      def nested_attribute(name)
-        (@attribute_ancestors ||= []).push name
-        yield
-        @attribute_ancestors.pop
-      end
-
-      def check_valid_json_type(type)
-        valid_json_types = [:number, :string, :boolean, :array, :object, :null]
-        unless valid_json_types.include? type
-          raise "Either pass a hash of size 1 or a symbol of #{valid_json_types}"
-        end
+        (rspec_api[:callbacks] ||= []) << {name: callback_parameter.to_s, value: 'a_callback'}
       end
     end
   end

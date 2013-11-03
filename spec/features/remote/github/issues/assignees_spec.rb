@@ -1,0 +1,44 @@
+require 'spec_helper'
+require 'rspec-api/dsl'
+require_relative '../github_helper'
+
+# http://developer.github.com/v3/issues/assignees
+resource :assignee do
+  authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
+
+  has_attribute :login, type: :string
+  has_attribute :id, type: {number: :integer}
+  has_attribute :avatar_url, type: [:null, string: :url]
+  has_attribute :gravatar_id, type: [:null, :string]
+  has_attribute :url, type: {string: :url}
+  has_attribute :html_url, type: {string: :url} # not documented
+  has_attribute :followers_url, type: {string: :url} # not documented
+  has_attribute :following_url, type: {string: :url} # not documented
+  has_attribute :gists_url, type: {string: :url} # not documented
+  has_attribute :starred_url, type: {string: :url} # not documented
+  has_attribute :subscriptions_url, type: {string: :url} # not documented
+  has_attribute :organizations_url, type: {string: :url} # not documented
+  has_attribute :repos_url, type: {string: :url} # not documented
+  has_attribute :events_url, type: {string: :url} # not documented
+  has_attribute :received_events_url, type: {string: :url} # not documented
+  has_attribute :type, type: :string # not documented
+  has_attribute :site_admin, type: :boolean # not documented
+
+  get '/repos/:owner/:repo/assignees', array: true do
+    request 'List assignees', owner: existing(:owner), repo: existing(:repo) do
+      respond_with :ok
+    end
+  end
+
+  get '/repos/:owner/:repo/assignees/:assignee' do
+    request 'Check assignee', owner: existing(:owner), repo: existing(:repo), assignee: existing(:assignee) do
+      respond_with :no_content
+    end
+  end
+
+  get '/repos/:owner/:repo/assignees/:assignee' do
+    request 'Check assignee', owner: existing(:owner), repo: existing(:repo), assignee: unknown(:assignee) do
+      respond_with :not_found
+    end
+  end
+end

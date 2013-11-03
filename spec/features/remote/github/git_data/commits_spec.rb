@@ -3,31 +3,31 @@ require 'rspec-api/dsl'
 require_relative '../github_helper'
 
 # http://developer.github.com/v3/git/commits
-resource 'Commits' do
+resource :commit do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :sha, :string
-  has_attribute :url, :string, format: :url
-  has_attribute :html_url, :string, format: :url # not documented
-  has_attribute :author, :object do
-    has_attribute :date, :string, format: :timestamp
-    has_attribute :name, :string
-    has_attribute :email, :string, format: :email
+  has_attribute :sha, type: :string
+  has_attribute :url, type: {string: :url}
+  has_attribute :html_url, type: {string: :url} # not documented
+  has_attribute :author, type: :object do
+    has_attribute :date, type: {string: :timestamp}
+    has_attribute :name, type: :string
+    has_attribute :email, type: {string: :email}
   end
-  has_attribute :committer, :object do
-    has_attribute :date, :string, format: :timestamp
-    has_attribute :name, :string
-    has_attribute :email, :string, format: :email
+  has_attribute :committer, type: :object do
+    has_attribute :date, type: {string: :timestamp}
+    has_attribute :name, type: :string
+    has_attribute :email, type: {string: :email}
   end
-  has_attribute :message, :string
-  has_attribute :tree, :object do
-    has_attribute :url, :string, format: :url
-    has_attribute :sha, :string
+  has_attribute :message, type: :string
+  has_attribute :tree, type: :object do
+    has_attribute :url, type: {string: :url}
+    has_attribute :sha, type: :string
   end
-  has_attribute :parents, :array do
-    has_attribute :url, :string, format: :url
-    has_attribute :html_url, :string, format: :url # not documented
-    has_attribute :sha, :string
+  has_attribute :parents, type: :array do
+    has_attribute :url, type: {string: :url}
+    has_attribute :html_url, type: {string: :url} # not documented
+    has_attribute :sha, type: :string
   end
 
   get '/repos/:owner/:repo/git/commits/:sha' do

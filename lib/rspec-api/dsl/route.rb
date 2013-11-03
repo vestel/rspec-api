@@ -44,12 +44,25 @@ module DSL
       def sets_of_parameters
         [].tap do |sets_of_params|
           sets_of_params.push no_params
-          sets_of_params.push callback_params if rspec_api[:callback]
+          if rspec_api[:callbacks]
+            rspec_api[:callbacks].each do |callback|
+              sets_of_params.push callback_params(callback)
+            end
+          end
           if rspec_api[:array]
-            sets_of_params.push sort_params(verse: :asc) if rspec_api[:sort]
-            sets_of_params.push sort_params(verse: :desc) if rspec_api[:sort]
-            sets_of_params.push page_params if rspec_api[:page]
-            sets_of_params.push filter_params if rspec_api[:filter]
+            if rspec_api[:sorts]
+              rspec_api[:sorts].each do |sort|
+                sets_of_params.push sort_params(sort)
+              end
+            end
+            if rspec_api[:filters]
+              rspec_api[:filters].each do |filter|
+                sets_of_params.push filter_params(filter)
+              end
+            end
+            if rspec_api[:page]
+              sets_of_params.push page_params
+            end
           end
         end
       end
@@ -58,10 +71,13 @@ module DSL
         {} # always send the original request without extra parameters
       end
 
-      def sort_params(options = {})
-        ascending = options[:verse] == :asc
-        sort = rspec_api[:sort][:name]
-        {sort: ascending ? "#{sort}" : "-#{sort}"}
+      def sort_params(sort)
+        {}.tap do |params|
+          params[sort[:name]] = sort[:value]
+          sort.fetch(:extra_fields, {}).each do |name, value|
+            params[name] = value
+          end
+        end
       end
 
       def page_params
@@ -70,15 +86,15 @@ module DSL
         end
       end
 
-      def filter_params
+      def filter_params(filter)
         {}.tap do |params|
-          params[rspec_api[:filter][:name]] = existing rspec_api[:filter][:on]
+          params[filter[:name]] = existing filter[:by]
         end
       end
 
-      def callback_params
+      def callback_params(callback)
         {}.tap do |params|
-          params[rspec_api[:callback][:name]] = rspec_api[:callback][:value]
+          params[callback[:name]] = callback[:value]
         end
       end
 
@@ -90,7 +106,7 @@ module DSL
               value = body.delete(key)
               value = value.call if value.is_a?(Proc)
               interpolated_route[":#{key}"] = value.to_s
-              (@request_params ||= {})[key] = value
+              (@url_params ||= {})[key] = value
             else
               body[key] = body[key].call if body[key].is_a?(Proc)
             end

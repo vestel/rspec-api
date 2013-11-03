@@ -3,35 +3,35 @@ require 'rspec-api/dsl'
 require_relative '../github_helper'
 
 # http://developer.github.com/v3/activity/events/
-resource 'Events' do
+resource :event do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :id, :string
-  has_attribute :type, :string
-  has_attribute :actor, :object, can_be_nil: true do
-    # has_attribute :id, :number, format: :integer  # Sometimes it's missing!!
-    # has_attribute :login, :string  # Sometimes it's missing!!
-    # has_attribute :gravatar_id, :string, can_be_nil: true  # Sometimes it's missing!!
+  has_attribute :id, type: :string
+  has_attribute :type, type: :string
+  has_attribute :actor, type: [:null, :object] do
+    # has_attribute :id, type: {number: :integer}  # Sometimes it's missing!!
+    # has_attribute :login, type: :string  # Sometimes it's missing!!
+    # has_attribute :gravatar_id, type: [:null, :string]  # Sometimes it's missing!!
     # e.g. {"url"=>"https://api.github.com/users/", "avatar_url"=>"https://a248.e.akamai.net/assets.github.com/images/gravatars/gravatar-user-420.png"}
-    has_attribute :url, :string, format: :url
-    has_attribute :avatar_url, :string, format: :url, can_be_nil: true
+    has_attribute :url, type: {string: :url}
+    has_attribute :avatar_url, type: [:null, string: :url]
   end
-  has_attribute :repo, :object do
-    # has_attribute :id, :number, format: :integer  # Sometimes it's missing!!
+  has_attribute :repo, type: :object do
+    # has_attribute :id, type: {number: :integer}  # Sometimes it's missing!!
     # e.g. {"name"=>"/", "url"=>"https://api.github.com/repos//"}
-    has_attribute :name, :string
-    has_attribute :url, :string, format: :url
+    has_attribute :name, type: :string
+    has_attribute :url, type: {string: :url}
   end
-  has_attribute :payload, :object # See http://git.io/Uln6EQ for types
-  has_attribute :public, :boolean
-  has_attribute :created_at, :string, format: :timestamp
+  has_attribute :payload, type: :object # See http://git.io/Uln6EQ for types
+  has_attribute :public, type: :boolean
+  has_attribute :created_at, type: {string: :timestamp}
   # NOTE: Sometimes org is missing (instead of being nil), so cannot test this:
-  # has_attribute :org, :object do
-  #   has_attribute :id, :number, format: :integer
-  #   has_attribute :login, :string
-  #   has_attribute :gravatar_id, :string, can_be_nil: true
-  #   has_attribute :url, :string, format: :url
-  #   has_attribute :avatar_url, :string, format: :url, can_be_nil: true
+  # has_attribute :org, type: :object do
+  #   has_attribute :id, type: {number: :integer}
+  #   has_attribute :login, type: :string
+  #   has_attribute :gravatar_id, type: [:null, :string]
+  #   has_attribute :url, type: {string: :url}
+  #   has_attribute :avatar_url, type: [:null, string: :url]
   # end
 
   accepts_page :page

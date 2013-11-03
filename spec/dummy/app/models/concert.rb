@@ -20,11 +20,17 @@ class Concert < ActiveRecord::Base
     end
   end
 
+  def as_json(options = nil)
+    super options.merge only: [:where, :year],
+                        include: {performers: {only: [:name, :website]}}
+  end
+
 private
 
   def self.valid_filters
     {
       location: -> location { [:where, ['lower(`where`) = ?', location.downcase]] },
+      where: -> location { [:where, where: location] },
       when: -> year { [:where, year: year] }
     }
   end

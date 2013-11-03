@@ -12,23 +12,26 @@ module GithubRoute
     def existing(field)
       case field
       when :org then 'rspec-api'
-      when :user then 'claudiob'
-      when :repo then 'dotfiles'
-      when :blob_sha then '700f3882cc26763273b4cd89badc9c745b111cad'
-      when :commit_sha then 'dbed42daee4105e48cc2f618a849c02f63924e3c'
-      when :tree_sha then 'f784ee6cb1da5bea83f9dfc882763d2239028f64'
-      when :starred_repo then 'neverfails'
-      when :unstarred_repo then 'cancan'
-      when :gist_id then '0d7b597d822102148810'
-      when :starred_gist_id then '1e31c19a5fb3c5330193'
-      when :unstarred_gist_id then '5cf0b36e301262a09b30'
-      when :someone_elses_gist_id then 'ca832349ffb06c19d424'
+      when :user, :owner, :assignee then 'rspecapi'
+      when :repo then 'guinea-pig' # has heads, tails, pull, notes
+      when :gist_id then '7175672'
+      when :gist_comment_id then '937901'
+
+      when :blob_sha then 'f32932f7c927d86f57f56d703ac2ed100ceb0e47'
+      when :commit_sha then 'c98a37ea3b2759d0c43fb8abfa9abd3146938790'
+      when :tree_sha then 'ebca91692290192f50acc307af9fe26b2eab4274'
+      when :ref then 'heads/master'
+      when :starred_repo then 'rspec-expectations' # make it different from :repo
+      when :unstarred_repo then 'rspec-core'  # make it different from :repo
+      when :starred_gist_id then 'e202e2fb143c54e5139a'
+      when :unstarred_gist_id then '8f2ef7e69ab79084d833'
+      when :someone_elses_gist_id then '4685e0bebbf05370abd6'
       when :thread_id then '17915960'
       when :id then '921225'
       # NOTE: The following are confusing: they are used for filters, not value
       # For instance, it's not that we must have an object with the following
       # updated_at, we just use it for the since filter
-      when :updated_at then '2013-10-07T10:10:10Z' # TODO use helpers
+      when :updated_at then '2013-10-31T09:53:00Z' # TODO use helpers
       # NOTE: Here's the confusion: :unread is used for the :all filter, but
       # it has the reverse meaning: ?all=false will only show unread='true'
       when :unread then 'false' # TODO use helpers
@@ -42,7 +45,7 @@ module GithubRoute
 
     def unknown(field)
       case field
-      when :user then 'not-a-valid-user'
+      when :user, :assignee then 'not-a-valid-user'
       when :gist_id then 'not-a-valid-gist-id'
       when :id then 'not-a-valid-id'
       end

@@ -13,4 +13,4 @@ matrix:
       gemfile: gemfiles/Gemfile.activesupport-3.x
 env:
   global:
-    secure: T3becyAvdUz5P62riqNBXW5xPrhf1FwuQ/LToLg3l9NMxwgTKrzxrxRPpHfoYOfgjGhvQv8m4Rl1YlgCOeXHVplg1BAFJ3WTo4f4Yomg/zFKbhvEqdU3UCY9guwatv9iT6eELfV/uzZTtmTw9kwdIuO3Goq/AQoOPWFKlTlCE2E=
+    secure: OCXstuTc+Mlc8y1Bcp4kyROBhISqfdewcZOXH7yKCABdsXdsmizOSywCxMQis9rmkyit6oC5LTeG6bPz8fM8VRYE5OEJJ+Ujawc4ldcMxX1RHCRuPPvMKs6oGOPrxSij/u4z1GGX9rFrJV1GfRO+nNFUwjkoW+mC9viLc1DZUvE=

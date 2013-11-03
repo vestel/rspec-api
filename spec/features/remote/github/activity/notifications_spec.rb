@@ -3,50 +3,50 @@ require 'rspec-api/dsl'
 require_relative '../github_helper'
 
 # http://developer.github.com/v3/activity/notifications/
-resource 'Notifications' do
+resource :notification do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :id, :string
-  has_attribute :repository, :object do
-    has_attribute :id, :number, format: :integer
-    has_attribute :owner, :object do
-      has_attribute :login, :string
-      has_attribute :id, :number, format: :integer
-      has_attribute :avatar_url, :string, format: :url, can_be_nil: true
-      has_attribute :gravatar_id, :string, can_be_nil: true
-      has_attribute :url, :string, format: :url
+  has_attribute :id, type: :string
+  has_attribute :repository, type: :object do
+    has_attribute :id, type: {number: :integer}
+    has_attribute :owner, type: :object do
+      has_attribute :login, type: :string
+      has_attribute :id, type: {number: :integer}
+      has_attribute :avatar_url, type: [:null, string: :url]
+      has_attribute :gravatar_id, type: [:null, :string]
+      has_attribute :url, type: {string: :url}
     end
-    has_attribute :name, :string
-    has_attribute :full_name, :string
-    has_attribute :description, :string
-    has_attribute :private, :boolean
-    has_attribute :fork, :boolean
-    has_attribute :url, :string, format: :url
-    has_attribute :html_url, :string, format: :url
+    has_attribute :name, type: :string
+    has_attribute :full_name, type: :string
+    has_attribute :description, type: :string
+    has_attribute :private, type: :boolean
+    has_attribute :fork, type: :boolean
+    has_attribute :url, type: {string: :url}
+    has_attribute :html_url, type: {string: :url}
   end
-  has_attribute :subject, :object do
-    has_attribute :title, :string
-    has_attribute :url, :string, format: :url
-    has_attribute :latest_comment_url, :string, format: :url
-    has_attribute :type, :string
+  has_attribute :subject, type: :object do
+    has_attribute :title, type: :string
+    has_attribute :url, type: {string: :url}
+    has_attribute :latest_comment_url, type: {string: :url}
+    has_attribute :type, type: :string
   end
-  has_attribute :reason, :string
-  has_attribute :unread, :boolean
-  has_attribute :updated_at, :string, format: :timestamp
-  has_attribute :last_read_at, :string, format: :timestamp, can_be_nil: true
-  has_attribute :url, :string, format: :url
+  has_attribute :reason, type: :string
+  has_attribute :unread, type: [:null, :boolean] # NOTE: why null? is it an error?
+  has_attribute :updated_at, type: {string: :timestamp}
+  has_attribute :last_read_at, type: [:null, string: :timestamp]
+  has_attribute :url, type: {string: :url}
 
-  accepts_filter :since, on: :updated_at, comparing_with: -> since, updated_at {since <= updated_at} # TODO: JSON parse timestamps
-  accepts_filter :all, on: :unread, comparing_with: -> all, unread { all == 'true' || unread == 'true' } # TODO: JSON parse booleans
-  accepts_filter :participating, on: :reason, comparing_with: -> participating, reason { participating == 'false' || ['author', 'mention'].include?(reason) } # TODO: JSON parse booleans
+  accepts_filter :since, by: :updated_at, comparing_with: -> since, updated_at {since <= updated_at} # TODO: JSON parse timestamps
+  accepts_filter :all, by: :unread, comparing_with: -> all, unread { all == 'true' || unread == 'true' } # TODO: JSON parse booleans
+  accepts_filter :participating, by: :reason, comparing_with: -> participating, reason { participating == 'false' || ['author', 'mention'].include?(reason) } # TODO: JSON parse booleans
 
   get '/notifications', array: true do #, wip: true do
     request 'List your notifications' do
-      respond_with :ok do |notifications|
+      respond_with :ok do |response|
         # NOTE: How do we make *internal* expectations not to be executed when
         #       a filter is passed? That is, a default value!
         # TODO: add value_in
-        # expect(notifications).to have_fields :reason, value_in: ['mention', 'author']
+        # expect(response).to have_fields :reason, value_in: ['mention', 'author']
       end
     end
   end
@@ -88,18 +88,17 @@ resource 'Notifications' do
       respond_with :reset_content
     end
   end
-
 end
 
-resource 'ThreadSubscriptions' do
+resource :thread_subscription do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :subscribed, :boolean
-  has_attribute :ignored, :boolean
-  has_attribute :reason, :string, can_be_nil: true
-  has_attribute :created_at, :string, format: :timestamp
-  has_attribute :url, :string, format: :url
-  has_attribute :thread_url, :string, format: :url
+  has_attribute :subscribed, type: :boolean
+  has_attribute :ignored, type: :boolean
+  has_attribute :reason, type: [:null, :string]
+  has_attribute :created_at, type: {string: :timestamp}
+  has_attribute :url, type: {string: :url}
+  has_attribute :thread_url, type: {string: :url}
 
   get '/notifications/threads/:id/subscription' do
     request 'Get a Thread Subscription', id: existing(:thread_id) do
@@ -109,9 +108,8 @@ resource 'ThreadSubscriptions' do
 
   put '/notifications/threads/:id/subscription' do
     request 'Set a Thread Subscription', id: existing(:thread_id), subscribed: true, ignored: false do
-      respond_with :ok do |subscription|
-        expect(subscription).to have_field :subscribed, value: true
-        expect(subscription).to have_field :ignored, value: false
+      respond_with :ok do |response|
+        expect(response).to have_attributes subscribed: {value: true}, ignored: {value: false}
       end
     end
   end

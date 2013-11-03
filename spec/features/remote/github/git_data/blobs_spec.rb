@@ -3,14 +3,14 @@ require 'rspec-api/dsl'
 require_relative '../github_helper'
 
 # http://developer.github.com/v3/git/blobs
-resource 'Gists' do
+resource :gist do
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
-  has_attribute :content, :string
-  has_attribute :encoding, :string
-  has_attribute :sha, :string
-  has_attribute :size, :number, format: :integer
-  has_attribute :url, :string, format: :url # undocumented
+  has_attribute :content, type: :string
+  has_attribute :encoding, type: :string
+  has_attribute :sha, type: :string
+  has_attribute :size, type: {number: :integer}
+  has_attribute :url, type: {string: :url} # undocumented
 
 
   get '/repos/:owner/:repo/git/blobs/:sha' do
