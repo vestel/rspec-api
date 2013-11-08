@@ -7,7 +7,7 @@
 * Textmate Bundle
 * Instead of
 
-        get '/concerts', array: true do
+        get '/concerts', collection: true do
           request do
             respond_with :ok
           end
@@ -16,7 +16,7 @@ I could have the syntax
 
         get '/concerts' do
           request do
-            respond_with :ok, array: true
+            respond_with :ok, collection: true
           end
         end
 except that it wouldn't know to make multiple requests for all the `accepts_`.

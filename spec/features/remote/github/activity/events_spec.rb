@@ -1,9 +1,8 @@
-require 'spec_helper'
-require 'rspec-api/dsl'
-require_relative '../github_helper'
+require 'github_helper'
 
 # http://developer.github.com/v3/activity/events/
 resource :event do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :id, type: :string
@@ -36,63 +35,61 @@ resource :event do
 
   accepts_page :page
 
-  get '/events', array: true do
-    request 'List public events' do
-      respond_with :ok
-    end
+  get '/events', collection: true do
+    respond_with :ok
   end
 
-  get '/repos/:owner/:repo/events', array: true do
-    request 'List repository events', owner: existing(:user), repo: existing(:repo) do
+  get '/repos/:owner/:repo/events', collection: true do
+    request_with owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
   end
 
   # NOTE: :wip because of http://git.io/sPHbWA
-  get '/repos/:owner/:repo/issues/events', array: true, wip: true do
-    request 'List issue events for a repository', owner: existing(:user), repo: existing(:repo) do
+  # get '/repos/:owner/:repo/issues/events', collection: true, wip: true do
+  #   request_with owner: existing(:user), repo: existing(:repo) do
+  #     respond_with :ok
+  #   end
+  # end
+
+  get '/networks/:owner/:repo/events', collection: true do
+    request_with owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
   end
 
-  get '/networks/:owner/:repo/events', array: true do
-    request 'List public events for a network of repositories', owner: existing(:user), repo: existing(:repo) do
+  get '/orgs/:org/events', collection: true do
+    request_with  org: existing(:org) do
       respond_with :ok
     end
   end
 
-  get '/orgs/:org/events', array: true do
-    request 'List public events for an organization', org: existing(:org) do
+  get '/users/:user/received_events', collection: true do
+    request_with user: existing(:user) do
       respond_with :ok
     end
   end
 
-  get '/users/:user/received_events', array: true do
-    request 'List events that a user has received', user: existing(:user) do
+  get '/users/:user/received_events/public', collection: true do
+    request_with user: existing(:user) do
       respond_with :ok
     end
   end
 
-  get '/users/:user/received_events/public', array: true do
-    request 'List public events that a user has received', user: existing(:user) do
+  get '/users/:user/events', collection: true do
+    request_with user: existing(:user) do
       respond_with :ok
     end
   end
 
-  get '/users/:user/events', array: true do
-    request 'List events performed by a user', user: existing(:user) do
+  get '/users/:user/events/public', collection: true do
+    request_with user: existing(:user) do
       respond_with :ok
     end
   end
 
-  get '/users/:user/events/public', array: true do
-    request 'List public events performed by a user', user: existing(:user) do
-      respond_with :ok
-    end
-  end
-
-  get '/users/:user/events/orgs/:org', array: true do
-    request 'List events for an organization', user: existing(:user), org: existing(:org) do
+  get '/users/:user/events/orgs/:org', collection: true do
+    request_with user: existing(:user), org: existing(:org) do
       respond_with :ok
     end
   end

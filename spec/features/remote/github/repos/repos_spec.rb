@@ -1,6 +1,4 @@
-require 'spec_helper'
-require 'rspec-api/dsl'
-require_relative '../github_helper'
+require 'github_helper'
 
 resource :owner do
   has_attribute :login, type: :string
@@ -16,6 +14,7 @@ end
 
 # http://developer.github.com/v3/repos/
 resource :repo do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :id, type: {number: :integer}
@@ -39,15 +38,15 @@ resource :repo do
   has_attribute :watchers, type: {number: :integer}
   has_attribute :watchers_count, type: {number: :integer}
   has_attribute :size, type: {number: :integer}
-  has_attribute :master_branch, type: :string
+  # has_attribute :master_branch, type: :string # Not always, see http://git.io/0jgFiA
   has_attribute :open_issues, type: {number: :integer}
   has_attribute :open_issues_count, type: {number: :integer}
   has_attribute :pushed_at, type: [:null, string: :timestamp]
   has_attribute :created_at, type: {string: :timestamp}
   has_attribute :updated_at, type: {string: :timestamp}
 
-  get '/users/:user/repos', array: true do
-    request 'List user repositories', user: existing(:user) do
+  get '/users/:user/repos', collection: true do
+    request_with user: existing(:user) do
       respond_with :ok
     end
   end

@@ -1,24 +1,45 @@
-require 'rspec-api/dsl/resource'
-require 'rspec-api/dsl/route'
-require 'rspec-api/dsl/request'
+require 'rspec-api/dsl/accepts'
+require 'rspec-api/dsl/actions'
+require 'rspec-api/dsl/attributes'
 
-module DSL
+module RSpecApi
+  module DSL
+    include Accepts
+    include Actions
+    include Attributes
+    include Fixtures
+  end
 end
 
-# Just like RSpec Core’s `describe` method, `resource` generates a subclass of
-# {ExampleGroup} and is available at the top-level namespace.
-# The difference is that examples declared inside a `resource` block have access
-# to RSpec API own methods, defined in DSL::Resource, such as `has_attribute`,
-# `accepts_filter`, `get`, `post`, and so on.
+# RSpecApi provides methods to test RESTful APIs.
+#
+# To have these methods available in your RSpec ExampleGroups you have to
+# tag the `describe` block with the `:rspec_api` metadata.
+#
+#  describe "Artists", rspec_api: true do
+#     ... # here you can use `get`, `delete`, etc.
+#  end
+RSpec.configuration.extend RSpecApi::DSL, rspec_api: true
+
+# Alternatively, you replace `describe` with `resource`, for the same result:
+#
+#
+#  resource :artist do
+#     ... # same as before, here you can use `get`, `delete`, etc.
+#  end
+#
+#
+# `resource` is indeed the only top-level namespace RSpecApi method.
 def resource(name, args = {}, &block)
-  args.merge! rspec_api_dsl: :resource, rspec_api: {resource_name: name}
-  describe name, args, &block
-end
-
-RSpec.configuration.include DSL::Resource, rspec_api_dsl: :resource
-RSpec.configuration.include DSL::Route, rspec_api_dsl: :route
-RSpec.configuration.include DSL::Request, rspec_api_dsl: :request
-
-if RSpec::Core::Version::STRING >= '2.14'
-  RSpec.configuration.backtrace_exclusion_patterns << %r{lib/rspec-api/dsl\.rb}
+  args.merge! rspec_api: true
+  resources = (@resources ||= [])
+  resource = describe name.to_s.pluralize.humanize, args do
+    @resource = name
+    @resources = resources
+    @expectations = []
+    @expectations << {query_params: {}, status_expect: {status: 200}, body_expect: {attributes: {name: {type: :string}, website: {type: [:null, string: :url]}}}}
+    @attributes = {}
+    instance_exec &block
+  end
+  @resources << resource
 end

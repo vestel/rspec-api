@@ -1,9 +1,8 @@
-require 'spec_helper'
-require 'rspec-api/dsl'
-require_relative '../github_helper'
+require 'github_helper'
 
 # http://developer.github.com/v3/activity/watching/
 resource :watcher do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :login, type: :string
@@ -12,18 +11,19 @@ resource :watcher do
   has_attribute :gravatar_id, type: [:null, :string]
   has_attribute :url, type: {string: :url}
 
-  get '/repos/:owner/:repo/subscribers', array: true do
-    request owner: existing(:user), repo: existing(:repo) do
+  get '/repos/:owner/:repo/subscribers', collection: true do
+    request_with owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
 
-    request owner: existing(:user), repo: unknown(:repo) do
+    request_with owner: existing(:user), repo: unknown(:repo) do
       respond_with :not_found
     end
   end
 end
 
 resource :watched_repo do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :id, type: {number: :integer}
@@ -53,27 +53,26 @@ resource :watched_repo do
   has_attribute :watchers, type: {number: :integer}
   has_attribute :watchers_count, type: {number: :integer}
   has_attribute :size, type: {number: :integer}
-  has_attribute :master_branch, type: :string
+  # has_attribute :master_branch, type: :string # Not always, see http://git.io/0jgFiA
   has_attribute :open_issues, type: {number: :integer}
   has_attribute :open_issues_count, type: {number: :integer}
   has_attribute :pushed_at, type: [:null, string: :timestamp]
   has_attribute :created_at, type: {string: :timestamp}
   has_attribute :updated_at, type: {string: :timestamp}
 
-  get '/users/:user/subscriptions', array: true do
-    request 'List repositories being watched', user: existing(:user) do
+  get '/users/:user/subscriptions', collection: true do
+    request_with user: existing(:user) do
       respond_with :ok
     end
   end
 
-  get '/user/subscriptions', array: true do
-    request 'List repositories being watched by the authenticated user' do
-      respond_with :ok
-    end
+  get '/user/subscriptions', collection: true do
+    respond_with :ok
   end
 end
 
 resource :repo_subscription do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :subscribed, type: :boolean
@@ -84,13 +83,13 @@ resource :repo_subscription do
   has_attribute :repository_url, type: {string: :url} # only field different from ThreadSubscriptions
 
   get '/repos/:owner/:repo/subscription' do
-    request 'Get a Repository Subscription', owner: existing(:user), repo: existing(:repo) do
+    request_with owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
   end
 
   put '/repos/:owner/:repo/subscription' do
-    request 'Set a Repository Subscription', owner: existing(:user), repo: existing(:repo), subscribed: true, ignored: false do
+    request_with owner: existing(:user), repo: existing(:repo), subscribed: true, ignored: false do
       respond_with :ok do |response|
         expect(response).to have_attributes subscribed: {value: true}, ignored: {value: false}
       end
@@ -98,9 +97,9 @@ resource :repo_subscription do
   end
 
   # NOTE: This is the only one missing, because I need to create one first!
-  delete '/repos/:owner/:repo/subscription', wip: true do
-    request 'Delete a Repository Subscription', owner: existing(:user), repo: existing(:repo) do
-      respond_with :no_content
-    end
-  end
+  # delete '/repos/:owner/:repo/subscription', wip: true do
+  #   request_with 'Delete a Repository Subscription', owner: existing(:user), repo: existing(:repo) do
+  #     respond_with :no_content
+  #   end
+  # end
 end

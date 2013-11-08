@@ -1,9 +1,8 @@
-require 'spec_helper'
-require 'rspec-api/dsl'
-require_relative '../github_helper'
+require 'github_helper'
 
 # http://developer.github.com/v3/issues/assignees
 resource :assignee do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :login, type: :string
@@ -24,20 +23,20 @@ resource :assignee do
   has_attribute :type, type: :string # not documented
   has_attribute :site_admin, type: :boolean # not documented
 
-  get '/repos/:owner/:repo/assignees', array: true do
-    request 'List assignees', owner: existing(:owner), repo: existing(:repo) do
+  get '/repos/:owner/:repo/assignees', collection: true do
+    request_with owner: existing(:owner), repo: existing(:repo) do
       respond_with :ok
     end
   end
 
   get '/repos/:owner/:repo/assignees/:assignee' do
-    request 'Check assignee', owner: existing(:owner), repo: existing(:repo), assignee: existing(:assignee) do
+    request_with owner: existing(:owner), repo: existing(:repo), assignee: existing(:assignee) do
       respond_with :no_content
     end
   end
 
   get '/repos/:owner/:repo/assignees/:assignee' do
-    request 'Check assignee', owner: existing(:owner), repo: existing(:repo), assignee: unknown(:assignee) do
+    request_with owner: existing(:owner), repo: existing(:repo), assignee: unknown(:assignee) do
       respond_with :not_found
     end
   end

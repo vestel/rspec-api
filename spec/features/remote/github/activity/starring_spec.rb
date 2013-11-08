@@ -1,9 +1,8 @@
-require 'spec_helper'
-require 'rspec-api/dsl'
-require_relative '../github_helper'
+require 'github_helper'
 
 # http://developer.github.com/v3/activity/starring/
 resource :stargazer do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :login, type: :string
@@ -24,36 +23,37 @@ resource :stargazer do
   has_attribute :type, type: :string # not documented
   has_attribute :site_admin, type: :boolean # not documented
 
-  get '/repos/:owner/:repo/stargazers', array: true do
-    request 'List Stargazers', owner: existing(:user), repo: existing(:repo) do
+  get '/repos/:owner/:repo/stargazers', collection: true do
+    request_with owner: existing(:user), repo: existing(:repo) do
       respond_with :ok
     end
   end
 
   get '/user/starred/:owner/:repo' do
-    request 'Check if you are starring a starred repository', owner: existing(:user), repo: existing(:starred_repo) do
+    request_with owner: existing(:user), repo: existing(:starred_repo) do
       respond_with :no_content
     end
 
-    request 'Check if you are starring an unstarred repository', owner: existing(:user), repo: existing(:unstarred_repo) do
+    request_with owner: existing(:user), repo: existing(:unstarred_repo) do
       respond_with :not_found
     end
   end
 
   put '/user/starred/:owner/:repo' do
-    request 'Star a repository', owner: existing(:user), repo: existing(:repo) do
+    request_with owner: existing(:user), repo: existing(:repo) do
       respond_with :no_content
     end
   end
 
   delete '/user/starred/:owner/:repo' do
-    request 'Unstar a repository', owner: existing(:user), repo: existing(:repo) do
+    request_with owner: existing(:user), repo: existing(:repo) do
       respond_with :no_content
     end
   end
 end
 
 resource :starred_repo do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :id, type: {number: :integer}
@@ -83,30 +83,28 @@ resource :starred_repo do
   has_attribute :watchers, type: {number: :integer}
   has_attribute :watchers_count, type: {number: :integer}
   has_attribute :size, type: {number: :integer}
-  has_attribute :master_branch, type: :string
+  # has_attribute :master_branch, type: :string # Not always, see http://git.io/0jgFiA
   has_attribute :open_issues, type: {number: :integer}
   has_attribute :open_issues_count, type: {number: :integer}
   has_attribute :pushed_at, type: [:null, string: :timestamp]
   has_attribute :created_at, type: {string: :timestamp}
   has_attribute :updated_at, type: {string: :timestamp}
 
-  accepts_sort 'updated', extra_fields: {direction: 'asc'}, by: :pushed_at, verse: :asc
-  accepts_sort 'updated', extra_fields: {direction: 'desc'}, by: :pushed_at, verse: :desc
+  accepts_sort 'updated', by: :pushed_at, verse: :asc, sort_if: {direction: 'asc'}
+  accepts_sort 'updated', by: :pushed_at, verse: :desc, sort_if: {direction: 'desc'}
   # NOTE: There is an additional sorting 'created' by date that the repos
   #       were starred. Unfortunately, this timestamp is not included in
   #       the result, so there is no way to test it! Would be something like:
   # accepts_sort 'created', extra_fields: {direction: 'asc'}, by: :starred_at, verse: :asc
   # accepts_sort 'created', extra_fields: {direction: 'desc'}, by: :starred_at, verse: :desc
 
-  get '/users/:user/starred', array: true do
-    request 'List repositories being starred', user: existing(:user) do
+  get '/users/:user/starred', collection: true do
+    request_with user: existing(:user) do
       respond_with :ok
     end
   end
 
-  get '/user/starred', array: true do
-    request 'List repositories being starred by the authenticated user' do
-      respond_with :ok # by default: sorted by created_at
-    end
+  get '/user/starred', collection: true do
+    respond_with :ok # by default: sorted by created_at
   end
 end

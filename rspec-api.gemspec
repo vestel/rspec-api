@@ -23,7 +23,8 @@ Gem::Specification.new do |spec|
   spec.required_rubygems_version = ">= 1.3.6"
 
   spec.add_dependency 'rspec'
-  spec.add_dependency 'rspec-api-matchers' # expect(200).to match_status(200)
+  spec.add_dependency 'rspec-api-matchers', '~> 0.5.0' # expect(200).to match_status(200)
+  spec.add_dependency 'rspec-api-expectations', '~> 0.5.0' # expect_resourceful
   spec.add_dependency 'rack' # for ::Utils
   spec.add_dependency 'activesupport' # for ::Concern
 

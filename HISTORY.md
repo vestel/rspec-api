@@ -1,3 +1,20 @@
+v0.5.0  - 2013/11/07
+--------------------
+
+Extract all expectations in a separate rspec-api-expectations gem.
+Most of the code rewritten to remove complexity given by metadata,
+in favor of more modular architecture.
+Added `valid` and `invalid` to Fixtures module.
+`respond_to` now works even without a surrounding `request_with`.
+
+Might break compatibility since:
+
+* `get '..', collection: true` replaces `get '..', array: true`
+* `request_with` replaces `request`
+* `request_with` does not take an explicit description
+* `accepts_sort` optional field renamed to `sort_if`
+
+
 v0.4.0  - 2013/11/03
 --------------------
 

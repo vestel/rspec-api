@@ -1,9 +1,8 @@
-require 'spec_helper'
-require 'rspec-api/dsl'
-require_relative '../github_helper'
+require 'github_helper'
 
 # http://developer.github.com/v3/activity/feeds/
 resource :feed do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :timeline_url, type: {string: :url}
@@ -42,8 +41,6 @@ resource :feed do
   end
 
   get '/feeds' do
-    request 'List Feeds' do
-      respond_with :ok
-    end
+    respond_with :ok
   end
 end

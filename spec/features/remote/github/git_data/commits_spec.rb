@@ -1,9 +1,8 @@
-require 'spec_helper'
-require 'rspec-api/dsl'
-require_relative '../github_helper'
+require 'github_helper'
 
 # http://developer.github.com/v3/git/commits
 resource :commit do
+  extend Authorize
   authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
 
   has_attribute :sha, type: :string
@@ -31,14 +30,14 @@ resource :commit do
   end
 
   get '/repos/:owner/:repo/git/commits/:sha' do
-    request 'Get a Commit', owner: existing(:user), repo: existing(:repo), sha: existing(:commit_sha) do
+    request_with owner: existing(:user), repo: existing(:repo), sha: existing(:commit_sha) do
       respond_with :ok
     end
   end
 
   # TODO: Add optional parameters, committer, author, etc
   post '/repos/:owner/:repo/git/commits' do
-    request 'Post a Commit', owner: existing(:user), repo: existing(:repo), tree: existing(:tree_sha), message: 'Testing commit' do
+    request_with owner: existing(:user), repo: existing(:repo), tree: existing(:tree_sha), message: 'Testing commit' do
       respond_with :created
     end
   end

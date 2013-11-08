@@ -1,5 +1,0 @@
-require 'rspec-api/dsl/request/request'
-require 'rspec-api/dsl/request/response'
-require 'rspec-api/dsl/request/status'
-require 'rspec-api/dsl/request/headers'
-require 'rspec-api/dsl/request/body'

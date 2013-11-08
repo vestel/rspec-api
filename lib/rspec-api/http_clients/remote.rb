@@ -1,9 +1,18 @@
-module Http
-  module Remote
-    module Route
-      extend ActiveSupport::Concern
+require 'faraday'
+require 'faraday_middleware' # TODO: use autoload, we only need EncodeJson
+require 'faraday-http-cache'
+require 'logger'
 
-      def send_request(verb, route, body)
+module Authorize
+  def authorize_with(options = {})
+    @authorization = options
+  end
+end
+
+module RSpecApi
+  module DSL
+    module HttpClient
+      def send_request(verb, route, body, authorization)
         logger = Logger.new 'log/faraday.log'
 
         conn = Faraday.new 'https://api.github.com/' do |c| # TODO: Pass host as a parameter
@@ -23,9 +32,8 @@ module Http
         end
       end
 
-      def authorization
-        # TODO: Any other way to access metadata in a before(:all) ?
-        self.class.metadata[:rspec_api][:authorization]
+      def last_response
+        @last_response
       end
     end
   end
