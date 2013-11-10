@@ -12,13 +12,8 @@ resource :watcher do
   has_attribute :url, type: {string: :url}
 
   get '/repos/:owner/:repo/subscribers', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
-
-    request_with owner: existing(:user), repo: unknown(:repo) do
-      respond_with :not_found
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
+    respond_with :not_found, owner: existing(:user), repo: unknown(:repo)
   end
 end
 
@@ -61,9 +56,7 @@ resource :watched_repo do
   has_attribute :updated_at, type: {string: :timestamp}
 
   get '/users/:user/subscriptions', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 
   get '/user/subscriptions', collection: true do
@@ -83,23 +76,17 @@ resource :repo_subscription do
   has_attribute :repository_url, type: {string: :url} # only field different from ThreadSubscriptions
 
   get '/repos/:owner/:repo/subscription' do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   put '/repos/:owner/:repo/subscription' do
-    request_with owner: existing(:user), repo: existing(:repo), subscribed: true, ignored: false do
-      respond_with :ok do |response|
-        expect(response).to have_attributes subscribed: {value: true}, ignored: {value: false}
-      end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo), subscribed: true, ignored: false do |response|
+      expect(response).to have_attributes subscribed: {value: true}, ignored: {value: false}
     end
   end
 
   # NOTE: This is the only one missing, because I need to create one first!
   # delete '/repos/:owner/:repo/subscription', wip: true do
-  #   request_with 'Delete a Repository Subscription', owner: existing(:user), repo: existing(:repo) do
-  #     respond_with :no_content
-  #   end
+  #   respond_with :no_content, owner: existing(:user), repo: existing(:repo)
   # end
 end

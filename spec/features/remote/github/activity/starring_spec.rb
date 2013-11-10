@@ -24,31 +24,20 @@ resource :stargazer do
   has_attribute :site_admin, type: :boolean # not documented
 
   get '/repos/:owner/:repo/stargazers', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   get '/user/starred/:owner/:repo' do
-    request_with owner: existing(:user), repo: existing(:starred_repo) do
-      respond_with :no_content
-    end
-
-    request_with owner: existing(:user), repo: existing(:unstarred_repo) do
-      respond_with :not_found
-    end
+    respond_with :no_content, owner: existing(:user), repo: existing(:starred_repo)
+    respond_with :not_found, owner: existing(:user), repo: existing(:unstarred_repo)
   end
 
   put '/user/starred/:owner/:repo' do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :no_content
-    end
+    respond_with :no_content, owner: existing(:user), repo: existing(:repo)
   end
 
   delete '/user/starred/:owner/:repo' do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :no_content
-    end
+    respond_with :no_content, owner: existing(:user), repo: existing(:repo)
   end
 end
 
@@ -99,9 +88,7 @@ resource :starred_repo do
   # accepts_sort 'created', extra_fields: {direction: 'desc'}, by: :starred_at, verse: :desc
 
   get '/users/:user/starred', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 
   get '/user/starred', collection: true do

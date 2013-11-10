@@ -24,20 +24,14 @@ resource :assignee do
   has_attribute :site_admin, type: :boolean # not documented
 
   get '/repos/:owner/:repo/assignees', collection: true do
-    request_with owner: existing(:owner), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:owner), repo: existing(:repo)
   end
 
   get '/repos/:owner/:repo/assignees/:assignee' do
-    request_with owner: existing(:owner), repo: existing(:repo), assignee: existing(:assignee) do
-      respond_with :no_content
-    end
+    respond_with :no_content, owner: existing(:owner), repo: existing(:repo), assignee: existing(:assignee)
   end
 
   get '/repos/:owner/:repo/assignees/:assignee' do
-    request_with owner: existing(:owner), repo: existing(:repo), assignee: unknown(:assignee) do
-      respond_with :not_found
-    end
+    respond_with :not_found, owner: existing(:owner), repo: existing(:repo), assignee: unknown(:assignee)
   end
 end

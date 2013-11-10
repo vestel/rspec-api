@@ -22,52 +22,35 @@ resource :gist_comment do
   has_attribute :created_at, type: {string: :timestamp}
 
   get '/gists/:gist_id/comments', collection: true do
-    request_with gist_id: existing(:gist_id) do
-      respond_with :ok
-    end
-
-    request_with gist_id: unknown(:gist_id) do
-      respond_with :not_found
-    end
+    respond_with :ok, gist_id: existing(:gist_id)
+    respond_with :not_found, gist_id: unknown(:gist_id)
   end
 
   get '/gists/:gist_id/comments/:id' do
-    request_with gist_id: existing(:gist_id), id: existing(:gist_comment_id) do
-      respond_with :ok
-    end
-
-    request_with gist_id: existing(:gist_id), id: unknown(:gist_comment_id) do
-      respond_with :not_found
-    end
+    respond_with :ok, gist_id: existing(:gist_id), id: existing(:gist_comment_id)
+    respond_with :not_found, gist_id: existing(:gist_id), id: unknown(:gist_comment_id)
   end
 
   ## OPTION 1 FOR CREATE / EDIT / DESTROY
 
   # post '/gists/:gist_id/comments' do
-  #   # request_with 'Create an invalid comment', gist_id: existing(:gist_id), body: '' do
-  #   #   respond_with :unprocessable_entity do |response|
-  #   #     expect(response).to have_attributes errors: {value: [{resource: "GistComment", code: "missing_field", field: "body"}]}
-  #   #   end
-  #   # end
+  #  respond_with :unprocessable_entity, gist_id: existing(:gist_id), body: '' do |response|
+  #    expect(response).to have_attributes errors: {value: [{resource: "GistComment", code: "missing_field", field: "body"}]}
+  #  end
   #
-  #   request_with 'Create a comment', gist_id: existing(:gist_id), body: 'New comment' do
-  #     respond_with :created do |response|
-  #       expect(response).to have_attributes body: {value: 'New comment'}
-  #
-  #       patch '/gists/:gist_id/comments/:id' do
-  #         request_with 'Edit a comment', gist_id: existing(:gist_id), id: comment['id'], body: 'Edited comment' do
-  #           respond_with :ok do |response|
-  #             expect(response).to have_attributes body: {value: 'Edited comment'}
-  #
-  #             delete '/gists/:gist_id/comments/:id' do
-  #               request_with 'Delete a comment', gist_id: existing(:gist_id), id: comment['id'] do
-  #                 respond_with :no_content
-  #               end
-  #             end
-  #           end
-  #         end
-  #       end
-  #     end
+  #  respond_with :created, gist_id: existing(:gist_id), body: 'New comment' do |response|
+  #    expect(response).to have_attributes body: {value: 'New comment'}
+  #  
+  #    patch '/gists/:gist_id/comments/:id' do
+  #      respond_with :ok, gist_id: existing(:gist_id), id: comment['id'], body: 'Edited comment' do |response|
+  #        expect(response).to have_attributes body: {value: 'Edited comment'}
+  #  
+  #        delete '/gists/:gist_id/comments/:id' do
+  #          respond_with :no_content, gist_id: existing(:gist_id), id: comment['id']
+  #        end
+  #      end
+  #    end
+  #  end
   #   end
   # end
   #
@@ -76,18 +59,14 @@ resource :gist_comment do
   # 'Create a comment' unless it's already been run (and not deleted)
   #
   # post '/gists/:gist_id/comments' do
-  #   request_with 'Create a comment', gist_id: existing(:gist_id), body: 'New comment' do
-  #     respond_with :created do |response|
-  #       expect(response).to have_attributes body: {value: 'New comment'}
-  #     end
+  #   respond_with :created, gist_id: existing(:gist_id), body: 'New comment' do |response|
+  #     expect(response).to have_attributes body: {value: 'New comment'}
   #   end
   # end
   #
   # patch '/gists/:gist_id/comments/:id'  do
-  #   request_with 'Edit a comment', gist_id: existing(:gist_id), id: existing(:gist_comment_id), body: 'Edited comment' do
-  #     respond_with :ok do |response|
-  #       expect(response).to have_attributes body: {value: 'Edited comment'}
-  #     end
+  #   respond_with :ok, gist_id: existing(:gist_id), id: existing(:gist_comment_id), body: 'Edited comment' do |response|
+  #     expect(response).to have_attributes body: {value: 'Edited comment'}
   #   end
   # end
 end

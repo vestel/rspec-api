@@ -13,15 +13,11 @@ resource :gist do
 
 
   get '/repos/:owner/:repo/git/blobs/:sha' do
-    request_with owner: existing(:user), repo: existing(:repo), sha: existing(:blob_sha) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo), sha: existing(:blob_sha)
   end
 
   # NOTE: wip because the returned object *only* has sha and url! not the rest
   # post '/repos/:owner/:repo/git/blobs', wip: true do
-  #   request_with 'Create a Blob', owner: existing(:user), repo: existing(:repo), content: 'Content of the Blob', encoding: 'utf-8' do
-  #     respond_with :created
-  #   end
+  #   respond_with :created, owner: existing(:user), repo: existing(:repo), content: 'Content of the Blob', encoding: 'utf-8'
   # end
 end

@@ -49,9 +49,7 @@ resource :notification do
   end
 
   get '/repos/:owner/:repo/notifications', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   put '/notifications' do
@@ -63,25 +61,19 @@ resource :notification do
   end
 
   put '/repos/:owner/:repo/notifications' do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :reset_content do
-        # TODO: there is an optional last_read_at parameter; if set, it does
-        # not *read* all the notification, but we need a subsequent call to
-        # to GET to test that it actually works, because here there's no body
-      end
+    respond_with :reset_content, owner: existing(:user), repo: existing(:repo) do
+      # TODO: there is an optional last_read_at parameter; if set, it does
+      # not *read* all the notification, but we need a subsequent call to
+      # to GET to test that it actually works, because here there's no body
     end
   end
 
   get '/notifications/threads/:id' do
-    request_with id: existing(:thread_id) do
-      respond_with :ok
-    end
+    respond_with :ok, id: existing(:thread_id)
   end
 
   patch '/notifications/threads/:id' do
-    request_with id: existing(:thread_id) do
-      respond_with :reset_content
-    end
+    respond_with :reset_content, id: existing(:thread_id)
   end
 end
 
@@ -97,23 +89,17 @@ resource :thread_subscription do
   has_attribute :thread_url, type: {string: :url}
 
   get '/notifications/threads/:id/subscription' do
-    request_with id: existing(:thread_id) do
-      respond_with :ok
-    end
+    respond_with :ok, id: existing(:thread_id)
   end
 
   put '/notifications/threads/:id/subscription' do
-    request_with id: existing(:thread_id), subscribed: true, ignored: false do
-      respond_with :ok do |response|
-        expect(response).to have_attributes subscribed: {value: true}, ignored: {value: false}
-      end
+    respond_with :ok, id: existing(:thread_id), subscribed: true, ignored: false do |response|
+      expect(response).to have_attributes subscribed: {value: true}, ignored: {value: false}
     end
   end
 
   # NOTE: This is the only one missing, because I need to create one first!
   # delete '/notifications/threads/:id/subscription', wip: true do
-  #   request_with 'Delete a Thread Subscription', id: existing(:thread_id) do
-  #     respond_with :no_content
-  #   end
+  #   respond_with :no_content, id: existing(:thread_id)
   # end
 end

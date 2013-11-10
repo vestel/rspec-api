@@ -40,57 +40,39 @@ resource :event do
   end
 
   get '/repos/:owner/:repo/events', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   # NOTE: :wip because of http://git.io/sPHbWA
   # get '/repos/:owner/:repo/issues/events', collection: true, wip: true do
-  #   request_with owner: existing(:user), repo: existing(:repo) do
-  #     respond_with :ok
-  #   end
+  #   respond_with :ok, owner: existing(:user), repo: existing(:repo)
   # end
 
   get '/networks/:owner/:repo/events', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   get '/orgs/:org/events', collection: true do
-    request_with  org: existing(:org) do
-      respond_with :ok
-    end
+    respond_with :ok, org: existing(:org)
   end
 
   get '/users/:user/received_events', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 
   get '/users/:user/received_events/public', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 
   get '/users/:user/events', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 
   get '/users/:user/events/public', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 
   get '/users/:user/events/orgs/:org', collection: true do
-    request_with user: existing(:user), org: existing(:org) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user), org: existing(:org)
   end
 end

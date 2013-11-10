@@ -18,13 +18,8 @@ resource :artist do
   end
 
   delete '/artists/:id' do
-    request_with id: existing(:id) do
-      respond_with :no_content
-    end
-
-    request_with id: unknown(:id) do
-      respond_with :not_found
-    end
+    respond_with :no_content, id: existing(:id)
+    respond_with :not_found, id: unknown(:id)
   end
 end
 
@@ -37,64 +32,43 @@ resource :concert do
   accepts_sort '-time', by: :year, verse: :desc
   accepts_sort 'time', by: :year, verse: :asc
   accepts_sort 'random'
-  # accepts_page :page
-  #
-  # get '/concerts', collection: true do
-  #   respond_with :ok
-  # end
+  accepts_page :page
+
+  get '/concerts', collection: true do
+    respond_with :ok
+  end
 
   get '/locations/:location/concerts', collection: true do
-    request_with location: apply(:downcase, to: existing(:where)) do
-      respond_with :ok do |response, route_params|
-        # debugger unless JSON(response.body).all?{|x| x['where'].downcase == route_params[:location]}
-        expect(response).to have_attributes where: {value: -> v {v.downcase == route_params[:location]}}
-      end
+    respond_with :ok, location: apply(:downcase, to: existing(:where))  do |response, route_params|
+      expect(response).to have_attributes where: {value: -> v {v.downcase == route_params[:location]}}
     end
   end
 
   get '/concerts/:id' do
-    request_with id: existing(:id) do
-      respond_with :ok
-    end
-
-    request_with id: unknown(:id) do
-      respond_with :not_found
-    end
+    respond_with :ok, id: existing(:id)
+    respond_with :not_found, id: unknown(:id)
   end
 
   post '/concerts' do
-    request_with concert: valid(where: 'Austin') do
-      respond_with :created do |response|
-        expect(response).to have_attributes where: {value: 'Austin'}
-      end
+    respond_with :created, concert: valid(where: 'Austin') do |response|
+      expect(response).to have_attributes where: {value: 'Austin'}
     end
 
-    request_with concert: invalid(year: 2013) do
-      respond_with :unprocessable_entity do |response|
-        expect(response).to have_attributes where: {value: ["can't be blank"]}
-      end
+    respond_with :unprocessable_entity, concert: invalid(year: 2013) do |response|
+      expect(response).to have_attributes where: {value: ["can't be blank"]}
     end
   end
 
   put '/concerts/:id' do
-    request_with id: existing(:id), concert: valid(year: 2011) do
-      respond_with :ok do |response|
-        expect(response).to have_attributes year: {value: 2011}
-      end
+    respond_with :ok, id: existing(:id), concert: valid(year: 2011) do |response|
+      expect(response).to have_attributes year: {value: 2011}
     end
 
-    request_with id: unknown(:id), concert: valid(year: 2011) do
-      respond_with :not_found
-    end
+    respond_with :not_found, id: unknown(:id), concert: valid(year: 2011)
   end
 
   delete '/concerts/:id' do
-    request_with id: existing(:id) do
-      respond_with :no_content
-    end
-
-    request_with id: unknown(:id) do
-      respond_with :not_found
-    end
+    respond_with :no_content, id: existing(:id)
+    respond_with :not_found, id: unknown(:id)
   end
 end

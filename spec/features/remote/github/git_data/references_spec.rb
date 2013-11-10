@@ -14,45 +14,33 @@ resource :ref do
   end
 
   get '/repos/:owner/:repo/git/refs/:ref' do
-    request_with owner: existing(:user), repo: existing(:repo), ref: existing(:ref) do
     # NOTE: How about this syntax?
-    # request_with 'Get a Reference', existing(owner: :user, repo: :repo, ref: :ref) do
-      respond_with :ok
-    end
+    # respond_with :ok, existing(owner: :user, repo: :repo, ref: :ref)
+    respond_with :ok, owner: existing(:user), repo: existing(:repo), ref: existing(:ref)
   end
 
   get '/repos/:owner/:repo/git/refs', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   # NOTE: A repo without /refs/heads will respond with 404
   get '/repos/:owner/:repo/git/refs/heads', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   # NOTE: A repo without /refs/tags will respond with 404
   get '/repos/:owner/:repo/git/refs/tags', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   # NOTE: A repo without /refs/pull will respond with 404
   get '/repos/:owner/:repo/git/refs/pull', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
   # NOTE: A repo without /refs/notes will respond with 404
   get '/repos/:owner/:repo/git/refs/notes', collection: true do
-    request_with owner: existing(:user), repo: existing(:repo) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
 
@@ -63,17 +51,13 @@ resource :ref do
   #   name = ('a'..'z').to_a.sample(16).join
   #   # NOTE: only works if authorized by the current GitHub API key
   #   post '/repos/:owner/:repo/git/refs' do
-  #     #request_with 'Create a Reference', owner: existing(:org), repo: existing(:repo_with_notes), ref: "refs/notes/#{name}", sha: '4d2376536140cb8db64845dc85ad5882f199808e' do
-  #     request_with 'Create a Reference', owner: 'rails', repo: 'rails', ref: "refs/notes/#{name}", sha: '4d2376536140cb8db64845dc85ad5882f199808e' do
-  #       respond_with :created
-  #     end
+  #     # respond_with :created, owner: existing(:org), repo: existing(:repo_with_notes), ref: "refs/notes/#{name}", sha: '4d2376536140cb8db64845dc85ad5882f199808e' do
+  #     respond_with :created, owner: 'rails', repo: 'rails', ref: "refs/notes/#{name}", sha: '4d2376536140cb8db64845dc85ad5882f199808e' do
   #   end
   #
   #   # NOTE: only works if authorized by the current GitHub API key
   #   delete '/repos/:owner/:repo/git/refs/:ref' do
-  #     request_with 'Create a Reference', owner: existing(:org), repo: existing(:repo_with_notes), ref: "notes/#{name}" do
-  #       respond_with :no_content
-  #     end
+  #     respond_with :no_content, owner: existing(:org), repo: existing(:repo_with_notes), ref: "notes/#{name}"
   #   end
   # end
 end

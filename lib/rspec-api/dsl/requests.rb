@@ -9,9 +9,9 @@ module RSpecApi
         end
       end
 
-      def respond_with(*args) # NOT THE TRUE ONE
-        request_with do
-          respond_with(*args)
+      def respond_with(status, query_params = {}, &block) # NOT THE TRUE ONE
+        request_with query_params do
+          respond_with status, &block
         end
       end
 

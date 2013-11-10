@@ -46,8 +46,6 @@ resource :repo do
   has_attribute :updated_at, type: {string: :timestamp}
 
   get '/users/:user/repos', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 end

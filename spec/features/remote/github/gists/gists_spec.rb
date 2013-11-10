@@ -59,9 +59,7 @@ resource :gist do
   accepts_filter :since, by: :updated_at, compare_with: :>=
 
   get '/users/:user/gists', collection: true do
-    request_with user: existing(:user) do
-      respond_with :ok
-    end
+    respond_with :ok, user: existing(:user)
   end
 
   get '/gists', collection: true do
@@ -77,80 +75,55 @@ resource :gist do
   end
 
   get '/gists/:id' do
-    request_with id: existing(:gist_id) do
-      respond_with :ok
-    end
+    respond_with :ok, id: existing(:gist_id)
   end
 
   post '/gists' do
-    request_with valid(public: false, files: {file1: {content: 'txt'}}) do
-      respond_with :created do |response|
-        condition = -> files {files[:file1][:content] == 'txt'}
-        expect(response).to have_attributes files: {value: condition}
-      end
+    respond_with :created, valid(public: false, files: {file1: {content: 'txt'}}) do |response|
+      condition = -> files {files[:file1][:content] == 'txt'}
+      expect(response).to have_attributes files: {value: condition}
     end
 
-    request_with invalid(public: false) do
-      respond_with :unprocessable_entity do |response|
-        errors = [{resource: "Gist", code: "missing_field", field: "files"}]
-        expect(response).to have_attributes errors: {value: errors}
-      end
+    respond_with :unprocessable_entity, invalid(public: false) do |response|
+      errors = [{resource: "Gist", code: "missing_field", field: "files"}]
+      expect(response).to have_attributes errors: {value: errors}
     end
   end
 
   # Wrong docs, see http://git.io/pke5Ww
   # post '/gists', failing: true do
-  #   request_with 'without :public', files: {file1: {content: 'txt'}} do
-  #     respond_with :unprocessable_entity # Getting 201 instead
-  #   end
+  #   respond_with :unprocessable_entity, files: {file1: {content: 'txt'}} # Getting 201 instead
   # end
 
   patch '/gists/:id' do
-    request_with id: existing(:gist_id), description: 'Yo!' do
-      respond_with :ok do |response|
-        expect(response).to have_attributes description: {value: 'Yo!'}
-      end
+    respond_with :ok, id: existing(:gist_id), description: 'Yo!' do |response|
+      expect(response).to have_attributes description: {value: 'Yo!'}
     end
 
-    request_with id: unknown(:gist_id), description: 'Yo!' do
-      respond_with :not_found
-    end
+    respond_with :not_found, id: unknown(:gist_id), description: 'Yo!'
   end
 
   put '/gists/:id/star' do
-    request_with id: existing(:gist_id) do
-      respond_with :no_content
-    end
+    respond_with :no_content, id: existing(:gist_id)
   end
 
   delete '/gists/:id/star' do
-    request_with id: existing(:gist_id) do
-      respond_with :no_content
-    end
+    respond_with :no_content, id: existing(:gist_id)
   end
 
   get '/gists/:id/star' do
-    request_with id: existing(:starred_gist_id) do
-      respond_with :no_content
-    end
-
-    request_with id: existing(:unstarred_gist_id) do
-      respond_with :not_found
-    end
+    respond_with :no_content, id: existing(:starred_gist_id)
+    respond_with :not_found, id: existing(:unstarred_gist_id)
   end
 
   post '/gists/:id/forks' do
-    request_with id: existing(:someone_elses_gist_id) do
-      respond_with :created do |response, route_params|
-        expect(response).not_to have_attributes id: {value: route_params[:id]}
-      end
+    respond_with :created, id: existing(:someone_elses_gist_id) do |response, route_params|
+      expect(response).not_to have_attributes id: {value: route_params[:id]}
     end
   end
 
   # NOTE: This is the only one missing, because I need to create one first!
   # delete '/gists/:id', wip: true do
-  #   request_with 'given an existing', id: existing(:id) do
-  #     respond_with :no_content
-  #   end
+  #   respond_with :no_content, id: existing(:id)
   # end
 end

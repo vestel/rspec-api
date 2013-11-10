@@ -30,15 +30,11 @@ resource :commit do
   end
 
   get '/repos/:owner/:repo/git/commits/:sha' do
-    request_with owner: existing(:user), repo: existing(:repo), sha: existing(:commit_sha) do
-      respond_with :ok
-    end
+    respond_with :ok, owner: existing(:user), repo: existing(:repo), sha: existing(:commit_sha)
   end
 
   # TODO: Add optional parameters, committer, author, etc
   post '/repos/:owner/:repo/git/commits' do
-    request_with owner: existing(:user), repo: existing(:repo), tree: existing(:tree_sha), message: 'Testing commit' do
-      respond_with :created
-    end
+    respond_with :created, owner: existing(:user), repo: existing(:repo), tree: existing(:tree_sha), message: 'A commit'
   end
 end
