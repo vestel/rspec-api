@@ -94,6 +94,7 @@ And you should see all the successful promises matched by the GitHub API:
     Finished in 1 minute 19.74 seconds
     1237 examples, 1 failure, 4 pending
 
+
 How to contribute
 =================
 

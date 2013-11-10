@@ -37,7 +37,7 @@ module RSpecApi
           before: create_fixture,
           after: destroy_fixture,
           status_expect: {status: 200},
-          body_expect: {filter: options.slice(:by, :comparing_with).merge(value: value)}
+          body_expect: {filter: options.slice(:by, :compare_with).merge(value: value)}
         }
       end
     end

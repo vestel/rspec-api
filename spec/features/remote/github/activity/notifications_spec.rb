@@ -35,9 +35,9 @@ resource :notification do
   has_attribute :last_read_at, type: [:null, string: :timestamp]
   has_attribute :url, type: {string: :url}
 
-  accepts_filter :since, by: :updated_at, comparing_with: -> since, updated_at {since <= updated_at} # TODO: JSON parse timestamps
-  accepts_filter :all, by: :unread, comparing_with: -> all, unread { all == 'true' || unread == 'true' } # TODO: JSON parse booleans
-  accepts_filter :participating, by: :reason, comparing_with: -> participating, reason { participating == 'false' || ['author', 'mention'].include?(reason) } # TODO: JSON parse booleans
+  accepts_filter :since, by: :updated_at, compare_with: :>= # TODO: JSON parse timestamps
+  accepts_filter :all, by: :unread, compare_with: -> all, unread { all == 'true' || unread == 'true' } # TODO: JSON parse booleans
+  accepts_filter :participating, by: :reason, compare_with: -> participating, reason { participating == 'false' || ['author', 'mention'].include?(reason) } # TODO: JSON parse booleans
 
   get '/notifications', collection: true do #, wip: true do
     respond_with :ok do |response|

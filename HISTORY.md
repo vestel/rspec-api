@@ -1,3 +1,12 @@
+v0.6.0  - 2013/11/09
+--------------------
+
+Bump updates from [rspec-api-expectations](http://git.io/xl11hQ#v060----20131109) and [rspec-api-matchers](http://git.io/kwn81g#v060----20131109):
+
+* Use `:value` option to specify to value to filter by in `be_filtered`
+* Rename `:comparing_with` to `:compare_with` in `be_filtered`
+* Accept a symbol in :compare_with (e.g.: compare_with: :<)
+
 v0.5.0  - 2013/11/07
 --------------------
 

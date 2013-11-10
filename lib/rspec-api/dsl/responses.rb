@@ -3,7 +3,7 @@ require 'rspec-api/expectations'
 module RSpecApi
   module DSL
     module Responses
-      include RSpecApi::Expectations::Resourceful
+      include RSpecApi::Expectations
 
       def respond_with(*args, &block)
         if args.first.is_a?(Hash)
@@ -22,7 +22,7 @@ module RSpecApi
         @headers_expect).merge(more_headers_expect).merge(@body_expect).
         merge(more_body_expect)
 
-        expect_resourceful(@response, all_expectations)
+        expect_response(@response, all_expectations)
         expect_custom(@response, @route_params, &block) if block_given?
       end
 

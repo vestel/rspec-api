@@ -56,7 +56,7 @@ resource :gist do
   has_attribute :commits_url, type: {string: :url}      # not documented for index but it's there:
   has_attribute :updated_at, type: {string: :timestamp} # not documented for index but it's there:
 
-  accepts_filter :since, by: :updated_at, comparing_with: -> since, updated_at {since <= updated_at}
+  accepts_filter :since, by: :updated_at, compare_with: :>=
 
   get '/users/:user/gists', collection: true do
     request_with user: existing(:user) do
