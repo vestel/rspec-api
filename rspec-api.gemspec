@@ -23,12 +23,14 @@ Gem::Specification.new do |spec|
   spec.required_rubygems_version = ">= 1.3.6"
 
   spec.add_dependency 'rspec'
-  spec.add_dependency 'rspec-api-expectations', '~> 0.6.0' # expect_resourceful
+  spec.add_dependency 'rspec-api-requests', '~> 0.7.0' # respond_with
+  spec.add_dependency 'rspec-api-expectations', '~> 0.7.0' # expect_resourceful
+  spec.add_dependency 'rspec-api-matchers', '~> 0.7.0' # expect_resourceful
   spec.add_dependency 'rack' # for ::Utils
   spec.add_dependency 'activesupport' # for ::Concern
 
   # For local
-  spec.add_dependency 'rack-test'
+  spec.add_development_dependency 'rack-test'
   spec.add_development_dependency 'activerecord', '>= 4.0'
   spec.add_development_dependency 'railties', '>= 4.0'
   spec.add_development_dependency 'rspec-rails'

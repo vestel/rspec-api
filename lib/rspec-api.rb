@@ -1,1 +1,1 @@
-require 'rspec-api/dsl'
+require 'rspec-api/resource'

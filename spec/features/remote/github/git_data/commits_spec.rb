@@ -1,10 +1,8 @@
-require 'github_helper'
+require 'spec_helper'
+require_relative '../github_helper'
 
 # http://developer.github.com/v3/git/commits
 resource :commit do
-  extend Authorize
-  authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
-
   has_attribute :sha, type: :string
   has_attribute :url, type: {string: :url}
   has_attribute :html_url, type: {string: :url} # not documented

@@ -1,24 +1,16 @@
-require 'github_helper'
-
-resource :owner do
-  has_attribute :login, type: :string
-  has_attribute :id, type: {number: :integer}
-  has_attribute :avatar_url, type: [:null, string: :url]
-  has_attribute :gravatar_id, type: [:null, :string]
-  has_attribute :url, type: {string: :url}
-end
-
-def attributes_of(resource)
-  RSpec.world.example_groups.find{|x| x.rspec_api[:resource_name] == resource}.rspec_api[:attributes]
-end
+require 'spec_helper'
+require_relative '../github_helper'
 
 # http://developer.github.com/v3/repos/
 resource :repo do
-  extend Authorize
-  authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
-
   has_attribute :id, type: {number: :integer}
-  has_attribute :owner, type: {object: attributes_of(:owner)}
+  has_attribute :owner, type: :object do
+    has_attribute :login, type: :string
+    has_attribute :id, type: {number: :integer}
+    has_attribute :avatar_url, type: [:null, string: :url]
+    has_attribute :gravatar_id, type: [:null, :string]
+    has_attribute :url, type: {string: :url}
+  end
   has_attribute :name, type: :string
   has_attribute :full_name, type: :string
   has_attribute :description, type: [:null, :string]
@@ -27,11 +19,11 @@ resource :repo do
   has_attribute :url, type: {string: :url}
   has_attribute :html_url, type: {string: :url}
   has_attribute :clone_url, type: {string: :url}
-  has_attribute :git_url, type: :string # should change URL to accept git://
-  has_attribute :ssh_url, type: :string # should change URL to accept git@
+  has_attribute :git_url, type: :string
+  has_attribute :ssh_url, type: :string
   has_attribute :svn_url, type: {string: :url}
-  has_attribute :mirror_url, type: [:null, :string] # should change URL to accept git://
-  has_attribute :homepage, type: [:null, string: :url]
+  has_attribute :mirror_url, type: [:null, :string]
+  has_attribute :homepage, type: [:null, :string] # can be an empty string :(
   has_attribute :language, type: [:null, :string]
   has_attribute :forks, type: {number: :integer}
   has_attribute :forks_count, type: {number: :integer}

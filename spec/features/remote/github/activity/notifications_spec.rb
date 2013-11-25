@@ -1,10 +1,8 @@
-require 'github_helper'
+require 'spec_helper'
+require_relative '../github_helper'
 
 # http://developer.github.com/v3/activity/notifications/
 resource :notification do
-  extend Authorize
-  authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
-
   has_attribute :id, type: :string
   has_attribute :repository, type: :object do
     has_attribute :id, type: {number: :integer}
@@ -35,16 +33,15 @@ resource :notification do
   has_attribute :last_read_at, type: [:null, string: :timestamp]
   has_attribute :url, type: {string: :url}
 
-  accepts_filter :since, by: :updated_at, compare_with: :>= # TODO: JSON parse timestamps
-  accepts_filter :all, by: :unread, compare_with: -> all, unread { all == 'true' || unread == 'true' } # TODO: JSON parse booleans
-  accepts_filter :participating, by: :reason, compare_with: -> participating, reason { participating == 'false' || ['author', 'mention'].include?(reason) } # TODO: JSON parse booleans
+  accepts filter: :since, by: :updated_at, compare_with: :>=, value: '2012-10-10T00:00:00Z'
 
-  get '/notifications', collection: true do #, wip: true do
+  accepts filter: :all, by: :unread, compare_with: -> all, unread { all == true || unread == true }, value: true
+  accepts filter: :participating, by: :reason, compare_with: -> participating, reason { participating == 'false' || ['author', 'mention'].include?(reason) }, value: true
+
+  get '/notifications', collection: true do
     respond_with :ok do |response|
-      # NOTE: How do we make *internal* expectations not to be executed when
-      #       a filter is passed? That is, a default value!
-      # TODO: add value_in
-      # expect(response).to have_fields :reason, value_in: ['mention', 'author']
+      # TODO: add range to have_attribute
+      # expect(response).to have_attribute reason: {range: ['mention', 'author']}
     end
   end
 
@@ -52,35 +49,25 @@ resource :notification do
     respond_with :ok, owner: existing(:user), repo: existing(:repo)
   end
 
-  put '/notifications' do
-    respond_with :reset_content do
-      # TODO: there is an optional last_read_at parameter; if set, it does
-      # not *read* all the notification, but we need a subsequent call to
-      # to GET to test that it actually works, because here there's no body
-    end
-  end
+  # NOTE: This works but makes all the other results empty :(
+  # put '/notifications' do
+  #   respond_with :reset_content
+  # end
 
   put '/repos/:owner/:repo/notifications' do
-    respond_with :reset_content, owner: existing(:user), repo: existing(:repo) do
-      # TODO: there is an optional last_read_at parameter; if set, it does
-      # not *read* all the notification, but we need a subsequent call to
-      # to GET to test that it actually works, because here there's no body
-    end
+    respond_with :reset_content, owner: existing(:user), repo: existing(:empty_repo)
   end
 
   get '/notifications/threads/:id' do
-    respond_with :ok, id: existing(:thread_id)
+    respond_with :ok, id: existing(:subscribed_thread_id)
   end
 
   patch '/notifications/threads/:id' do
-    respond_with :reset_content, id: existing(:thread_id)
+    respond_with :reset_content, id: existing(:subscribed_thread_id)
   end
 end
 
 resource :thread_subscription do
-  extend Authorize
-  authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
-
   has_attribute :subscribed, type: :boolean
   has_attribute :ignored, type: :boolean
   has_attribute :reason, type: [:null, :string]
@@ -89,17 +76,16 @@ resource :thread_subscription do
   has_attribute :thread_url, type: {string: :url}
 
   get '/notifications/threads/:id/subscription' do
-    respond_with :ok, id: existing(:thread_id)
+    respond_with :ok, id: existing(:subscribed_thread_id)
   end
 
   put '/notifications/threads/:id/subscription' do
-    respond_with :ok, id: existing(:thread_id), subscribed: true, ignored: false do |response|
+    respond_with :ok, id: existing(:subscribed_thread_id), subscribed: true, ignored: false do |response|
       expect(response).to have_attributes subscribed: {value: true}, ignored: {value: false}
     end
   end
 
-  # NOTE: This is the only one missing, because I need to create one first!
-  # delete '/notifications/threads/:id/subscription', wip: true do
-  #   respond_with :no_content, id: existing(:thread_id)
-  # end
+  delete '/notifications/threads/:id/subscription' do
+    respond_with :no_content, id: volatile(:subscribed_thread_id)
+  end
 end

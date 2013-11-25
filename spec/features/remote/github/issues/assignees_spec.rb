@@ -1,10 +1,8 @@
-require 'github_helper'
+require 'spec_helper'
+require_relative '../github_helper'
 
 # http://developer.github.com/v3/issues/assignees
 resource :assignee do
-  extend Authorize
-  authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
-
   has_attribute :login, type: :string
   has_attribute :id, type: {number: :integer}
   has_attribute :avatar_url, type: [:null, string: :url]

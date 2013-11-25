@@ -1,10 +1,8 @@
-require 'github_helper'
+require 'spec_helper'
+require_relative '../github_helper'
 
 # http://developer.github.com/v3/gitignore/
 resource :gitignore do
-  extend Authorize
-  authorize_with token: ENV['RSPEC_API_GITHUB_TOKEN']
-
   has_attribute :name, type: :string
   has_attribute :source, type: :string
 
