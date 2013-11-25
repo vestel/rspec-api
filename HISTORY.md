@@ -1,3 +1,9 @@
+v0.7.0  - 2013/11/24
+--------------------
+
+* Extract `respond_with` into rspec-api-requests
+* Lose support for :apply, specific fixtures, `valid` and `invalid` helpers
+
 v0.6.0  - 2013/11/09
 --------------------
 
