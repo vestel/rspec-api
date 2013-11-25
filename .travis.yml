@@ -2,15 +2,6 @@ language: ruby
 rvm:
 - 2.0.0
 - 1.9.3
-gemfile:
-  - gemfiles/Gemfile.activesupport-3.x
-  - gemfiles/Gemfile.activesupport-4.x
-matrix:
-  exclude:
-    - rvm: 1.9.3
-      gemfile: gemfiles/Gemfile.activesupport-3.x
-    - rvm: 2.0.0
-      gemfile: gemfiles/Gemfile.activesupport-3.x
 env:
   global:
     secure: OCXstuTc+Mlc8y1Bcp4kyROBhISqfdewcZOXH7yKCABdsXdsmizOSywCxMQis9rmkyit6oC5LTeG6bPz8fM8VRYE5OEJJ+Ujawc4ldcMxX1RHCRuPPvMKs6oGOPrxSij/u4z1GGX9rFrJV1GfRO+nNFUwjkoW+mC9viLc1DZUvE=

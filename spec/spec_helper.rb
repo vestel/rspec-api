@@ -4,6 +4,7 @@ Coveralls.wear!
 #require 'rspec-api'
 require 'ostruct'
 require 'active_support/core_ext/integer/time'
+require 'active_support/core_ext/numeric/time'
 
 Dir['./spec/support/**/*'].each {|f| require f}
 

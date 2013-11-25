@@ -19,13 +19,11 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^spec/})
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 1.9.3'
+  spec.required_ruby_version = '>= 1.9.2'
   spec.required_rubygems_version = ">= 1.3.6"
 
   spec.add_dependency 'rspec'
-  spec.add_dependency 'rspec-api-requests', '~> 0.7.0' # respond_with
-  spec.add_dependency 'rspec-api-expectations', '~> 0.7.0' # expect_resourceful
-  spec.add_dependency 'rspec-api-matchers', '~> 0.7.0' # expect_resourceful
+  spec.add_dependency 'rspec-api-requests', '~> 0.7.1' # respond_with
   spec.add_dependency 'rack' # for ::Utils
   spec.add_dependency 'activesupport' # for ::Concern
 
@@ -38,11 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'kaminari' # add pagination to models/controllers
   spec.add_development_dependency 'api-pagination' # add pagination Link headers to API
   spec.add_development_dependency 'jbuilder' # views
-
-  # For remote
-  spec.add_dependency 'faraday'
-  spec.add_dependency 'faraday_middleware'
-  spec.add_dependency 'faraday-http-cache', '>= 0.3.0'
 
   # For code coverage / CI
   spec.add_development_dependency 'rake'
