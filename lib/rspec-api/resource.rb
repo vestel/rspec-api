@@ -3,6 +3,7 @@ require 'active_support/inflector'
 require 'rspec-api/resource/actions'
 require 'rspec-api/resource/options'
 require 'rspec-api/resource/has_attribute'
+require 'rspec-api/resource/has_element'
 require 'rspec-api/resource/accepts'
 
 module RSpecApi
@@ -27,6 +28,7 @@ module RSpecApi
     include Actions
     include Options
     include HasAttribute
+    include HasElement
     include Accepts
   end
 end
