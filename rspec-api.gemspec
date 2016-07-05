@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.required_rubygems_version = ">= 1.3.6"
 
   spec.add_dependency 'rspec'
-  spec.add_dependency 'rspec-api-requests', '~> 0.7.1' # respond_with
+  spec.add_dependency 'rspec-api-requests', '~> 0.7.2' # respond_with
   spec.add_dependency 'rack' # for ::Utils
   spec.add_dependency 'activesupport' # for ::Concern
 
@@ -32,10 +32,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'activerecord', '>= 4.0'
   spec.add_development_dependency 'railties', '>= 4.0'
   spec.add_development_dependency 'rspec-rails'
-  spec.add_development_dependency 'sqlite3'
+  spec.add_development_dependency 'sqlite3', '>= 1.3.11'
   spec.add_development_dependency 'kaminari' # add pagination to models/controllers
   spec.add_development_dependency 'api-pagination' # add pagination Link headers to API
   spec.add_development_dependency 'jbuilder' # views
+  spec.add_development_dependency 'pry'
 
   # For code coverage / CI
   spec.add_development_dependency 'rake'
